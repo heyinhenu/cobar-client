@@ -1,10 +1,10 @@
-CREATE database DBTEST1;
-CREATE database DBTEST2;
-CREATE database DBTEST3;
-CREATE TABLE `IUSER` (  
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,  
-  `taobaoId` bigint(20) DEFAULT '0',  
-  `name` varchar(20) DEFAULT '',  
-  `upd_time` datetime DEFAULT NULL,  
-  PRIMARY KEY (`id`)  
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+create database dbtest1;
+create database dbtest2;
+create database dbtest3;
+create table `iuser` (
+  `id` bigint(20) not null auto_increment,
+  `taobaoid` bigint(20) default '0',
+  `name` varchar(20) default '',
+  `upd_time` datetime default null,
+  primary key (`id`)
+) engine=innodb auto_increment=10 default charset=utf8;

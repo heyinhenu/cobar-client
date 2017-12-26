@@ -19,7 +19,7 @@
 	
 	<!-- 配置数据源结束 -->
 	<bean id="dataSource0" class="org.apache.commons.dbcp.BasicDataSource" >
-		<property name="driverClassName" value="com.mysql.jdbc.Drive"/>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/dbtest1" />
 		<property name="username" value="root" />
 		<property name="password" value="67890" />
@@ -37,7 +37,7 @@
 		<property name="poolPreparedStatements" value="true" />
 	</bean>
 	<bean id="dataSource1" class="org.apache.commons.dbcp.BasicDataSource" >
-		<property name="driverClassName" value="com.mysql.jdbc.Drive"/>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/dbtest2" />
 		<property name="username" value="root" />
 		<property name="password" value="67890" />
@@ -55,7 +55,7 @@
 		<property name="poolPreparedStatements" value="true" />
 	</bean>
 	<bean id="dataSource2" class="org.apache.commons.dbcp.BasicDataSource" >
-		<property name="driverClassName" value="com.mysql.jdbc.Drive"/>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<property name="url" value="jdbc:mysql://localhost:3306/dbtest3" />
 		<property name="username" value="root" />
 		<property name="password" value="67890" />

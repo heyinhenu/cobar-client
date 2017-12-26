@@ -16,7 +16,7 @@
       <module name="cobar-client" target="1.5" />
       <module name="cobar-client (1)" target="1.8" />
       <module name="cobar-client (1) (com.alibaba.cobar)" target="1.5" />
-      <module name="cobar-client-demo" target="1.8" />
+      <module name="cobar-client-demo" target="1.7" />
       <module name="cobarclient" target="1.8" />
     </bytecodeTargetLevel>
   </component>
