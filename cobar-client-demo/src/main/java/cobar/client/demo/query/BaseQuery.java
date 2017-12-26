@@ -12,8 +12,8 @@ public class BaseQuery implements Serializable{
 	private static final long serialVersionUID = 1L;
 	public final static int DEFAULT_SIZE = 10;
 	protected int pageSize = DEFAULT_SIZE;
-	protected int startRow;//��ʼ��
-	protected int endRow;//������(�պ�)
+	protected int startRow;
+	protected int endRow;
 	protected int page = 1;
 	protected String fields;
 

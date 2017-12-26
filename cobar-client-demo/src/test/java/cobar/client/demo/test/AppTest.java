@@ -17,8 +17,6 @@ import cobar.client.demo.model.User;
 import cobar.client.demo.service.UserService;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-//@ContextConfiguration(locations={"classpath:applicationContext-1.0.xml"})
-//@ContextConfiguration(locations={"classpath:applicationContext-c3p0.xml"})
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext-dbcp.xml"})
 public class AppTest {
