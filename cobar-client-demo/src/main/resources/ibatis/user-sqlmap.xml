@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "sql-map-2.dtd">
+<sqlMap namespace="IUser">
+	<!-- Alias Map Defined -->
+	<typeAlias alias="UserQuery" type="cobar.client.demo.query.UserQuery" />
+	<typeAlias alias="User" type="cobar.client.demo.model.User" />
+	<resultMap id="User" class="User">
+		<result property="id" column="id" jdbcType="DECIMAL"/>
+		<result property="taobaoId" column="taobaoId" jdbcType="DECIMAL"/>
+		<result property="name" column="name" jdbcType="VARCHAR2"/>
+		<result property="updTime" column="upd_time" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	<!-- Select SQL -->
+	<sql id="selector">
+		SELECT
+		<dynamic>
+			<isNotEmpty property="fields">
+				$fields$
+			</isNotEmpty>
+			<isEmpty property="fields">
+				id , taobaoId , name , upd_time
+			</isEmpty>
+		</dynamic>
+		FROM IUser
+	</sql>
+	<sql id="UserList.where">
+		<dynamic prepend=" WHERE ">
+			<isNotNull property="id" prepend=" AND ">
+				id=#id:DECIMAL#
+			</isNotNull>
+			<isNotNull property="taobaoId" prepend=" AND ">
+				taobaoId=#taobaoId:DECIMAL#
+			</isNotNull>
+			<isNotNull property="name" prepend=" AND ">
+				<isEqual property="nameLike" compareValue="false">
+					name=#name:VARCHAR2#
+				</isEqual>
+				<isEqual property="nameLike" compareValue="true">
+					 <![CDATA[  name like '%$name$%' ]]>
+				</isEqual>
+			</isNotNull>
+		</dynamic>
+	</sql>
+
+	<!-- 用#号会导致druid连接池报错 -->
+	<sql id="UserList.order">
+		<dynamic prepend=" ORDER BY ">
+			<isNotEmpty property="orderFields">
+				<iterate property="orderFields" conjunction="," open=""
+					close="">
+					$orderFields[].fieldName$ $orderFields[].order$
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<sql id="UserList.limit">
+		<dynamic prepend=" LIMIT  ">
+			<isNotEmpty property="startRow">
+				#startRow#,#pageSize#
+			</isNotEmpty>
+		</dynamic>
+	</sql>
+
+	<!-- 根据主键查询 -->
+	<select id="getUserByKey" resultMap="User" parameterClass="User">
+		SELECT id , taobaoId , name , upd_time FROM IUser
+		WHERE
+		id=#id:DECIMAL#
+	</select>
+	<select id="getUserByID" resultMap="User" parameterClass="User">
+		SELECT id , taobaoId , name , upd_time FROM IUser
+		WHERE
+		taobaoId=#taobaoId:DECIMAL#
+	</select>
+	<select id="getUsersByKeys" resultMap="User" parameterClass="hashMap">
+		SELECT id , taobaoId , name , upd_time FROM IUser
+		WHERE
+		id in
+		<iterate conjunction="," open="(" close=")" property="keys">
+			#keys[]#
+		</iterate>
+	</select>
+
+	<!-- 根据主键删除 -->
+	<delete id="deleteByKey" parameterClass="User">
+		DELETE FROM IUser
+		WHERE
+		id=#id:DECIMAL#
+	</delete>
+
+	<delete id="deleteByKeys">
+		DELETE FROM IUser
+		WHERE
+		id in
+		<iterate conjunction="," open="(" close=")" property="keys">
+			#keys[]#
+		</iterate>
+	</delete>
+
+	<!-- 根据主键更新 -->
+	<update id="updateUserByKey" parameterClass="User">
+		UPDATE IUser
+		<dynamic prepend="SET">
+			<isNotNull prepend="," property="id">
+				id = #id:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="taobaoId">
+				taobaoId = #taobaoId:DECIMAL#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				name = substr(#name:VARCHAR2#,1,20)
+			</isNotNull>
+		</dynamic>
+		WHERE
+		id=#id:DECIMAL#
+	</update>
+	<!-- 分页 -->
+	<select id="getUserListWithPage" parameterClass="UserQuery"
+		resultMap="User">
+		<include refid="selector" />
+		<include refid="UserList.where" />
+		<include refid="UserList.order" />
+		<include refid="UserList.limit" />
+	</select>
+	<select id="getUserListCount" parameterClass="UserQuery"
+		resultClass="int">
+		SELECT count(1) FROM User
+		<include refid="UserList.where" />
+	</select>
+	<select id="getUserList" parameterClass="UserQuery"
+		resultMap="User">
+		<include refid="selector" />
+		<include refid="UserList.where" />
+		<include refid="UserList.order" />
+	</select>
+
+	<!-- 如果使用自定义字段查询,则要使用resultClass否则会出现异常 -->
+	<select id="getUserListWithPageFields" parameterClass="UserQuery"
+		resultClass="User">
+		<include refid="selector" />
+		<include refid="UserList.where" />
+		<include refid="UserList.order" />
+		<include refid="UserList.limit" />
+	</select>
+	<select id="getUserListFields" parameterClass="UserQuery"
+		resultClass="User">
+		<include refid="selector" />
+		<include refid="UserList.where" />
+		<include refid="UserList.order" />
+	</select>
+	<!-- <insert id="insertUser" parameterClass="User"> INSERT INTO User( 
+		id , taobaoId , name , upd_time VALUES( #id# , #taobaoId# , #name# , #updTime# 
+		) </insert> -->
+	<insert id="insertUser" parameterClass="User">
+		INSERT INTO IUser
+		<dynamic prepend="(" close=")">
+			<isNotEmpty prepend="," property="id">
+				id
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="taobaoId">
+				taobaoId
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="name">
+				name
+			</isNotEmpty>
+			,upd_time
+		</dynamic>
+		VALUES
+		<dynamic prepend="(" close=")">
+			<isNotEmpty prepend="," property="id">
+				#id#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="taobaoId">
+				#taobaoId#
+			</isNotEmpty>
+			<isNotEmpty prepend="," property="name">
+				Substr(#name#,1,20)
+			</isNotEmpty>
+			,sysdate
+		</dynamic>
+		<!-- <selectKey resultClass="long" keyProperty="id">
+			SELECT LAST_INSERT_ID() AS ID
+		</selectKey> -->
+	</insert>
+
+</sqlMap>

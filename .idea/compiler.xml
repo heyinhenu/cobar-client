@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="cobar-client (1)" />
+        <module name="cobar-client (1) (com.alibaba.cobar)" />
+        <module name="cobar-client-demo" />
+        <module name="cobarclient" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cobar-client" target="1.5" />
+      <module name="cobar-client (1)" target="1.8" />
+      <module name="cobar-client (1) (com.alibaba.cobar)" target="1.5" />
+      <module name="cobar-client-demo" target="1.8" />
+      <module name="cobarclient" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

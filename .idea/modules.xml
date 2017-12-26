@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/cobar-client.iml" filepath="$PROJECT_DIR$/.idea/cobar-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cobarclient/cobar-client (1).iml" filepath="$PROJECT_DIR$/cobarclient/cobar-client (1).iml" />
+      <module fileurl="file://$PROJECT_DIR$/cobarclient/cobar-client (1) (com.alibaba.cobar).iml" filepath="$PROJECT_DIR$/cobarclient/cobar-client (1) (com.alibaba.cobar).iml" />
+      <module fileurl="file://$PROJECT_DIR$/cobar-client-demo/cobar-client-demo.iml" filepath="$PROJECT_DIR$/cobar-client-demo/cobar-client-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cobarclient/cobarclient.iml" filepath="$PROJECT_DIR$/cobarclient/cobarclient.iml" />
+    </modules>
+  </component>
+</project>

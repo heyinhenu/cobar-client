@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	default-lazy-init="false"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+	<description>Spring公共配置</description>
+	<context:annotation-config/>
+	<context:component-scan base-package="cobar.client.demo"></context:component-scan>
+	<context:property-placeholder location="classpath:application.development.properties"/>
+	<!-- 配置数据源开始 -->
+	
+	<util:set id="shardSet" set-class="java.util.LinkedHashSet">
+        <ref bean="shard0"/>
+        <ref bean="shard1"/>
+        <ref bean="shard2"/>
+    </util:set>
+	
+
+	<!-- 数据源0 -->
+	<bean id="dataSource0" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="url" value="${jdbc0.url}" />
+		<property name="username" value="${jdbc0.username}" />
+		<property name="password" value="${jdbc0.password}" />
+		<property name="filters" value="config" />
+		<property name="maxActive" value="5" />
+		<property name="initialSize" value="5" />
+		<property name="maxWait" value="1" />
+		<property name="minIdle" value="5" />
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+		<!-- <property name="connectionProperties" value="config.decrypt=true" 
+			/> -->
+	</bean>
+
+	<!-- 数据源1 -->
+	<bean id="dataSource1" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="url" value="${jdbc1.url}" />
+		<property name="username" value="${jdbc1.username}" />
+		<property name="password" value="${jdbc1.password}" />
+		<property name="filters" value="config" />
+		<property name="maxActive" value="5" />
+		<property name="initialSize" value="5" />
+		<property name="maxWait" value="1" />
+		<property name="minIdle" value="5" />
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+	</bean>
+
+	<!-- 数据源2 -->
+	<bean id="dataSource2" class="com.alibaba.druid.pool.DruidDataSource"
+		init-method="init" destroy-method="close">
+		<property name="url" value="${jdbc2.url}" />
+		<property name="username" value="${jdbc2.username}" />
+		<property name="password" value="${jdbc2.password}" />
+		<property name="filters" value="config" />
+		<property name="maxActive" value="5" />
+		<property name="initialSize" value="5" />
+		<property name="maxWait" value="1" />
+		<property name="minIdle" value="5" />
+		<property name="timeBetweenEvictionRunsMillis" value="3000" />
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="validationQuery" value="SELECT 'x'" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize"
+			value="20" />
+	</bean>
+	
+	
+	<bean id="shard0" class="com.alibaba.cobarclient.Shard">
+        <property name="id" value="shard1"></property>
+        <property name="dataSource" ref="dataSource0"></property>
+    </bean>
+
+    <bean id="shard1" class="com.alibaba.cobarclient.Shard">
+        <property name="id" value="shard2"></property>
+        <property name="dataSource" ref="dataSource1"></property>
+    </bean>
+    <bean id="shard2" class="com.alibaba.cobarclient.Shard">
+        <property name="id" value="shard1"></property>
+        <property name="dataSource" ref="dataSource2"></property>
+    </bean>
+    
+    <util:map id="functionsMap">
+        <entry key="hash" value-ref="hashFunction">
+        </entry>
+    </util:map>
+	
+	<!-- 配置数据源结束 -->
+
+	<!-- 配置路由规则开始 -->
+	<bean id="router" class="com.alibaba.cobarclient.config.SimpleRouterFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:/dbrule/sqlaction-sharding-rules.xml</value>
+                <value>classpath:/dbrule/ns-sharding-rules.xml</value>
+            </list>
+        </property>
+        <property name="functions" ref="functionsMap"></property>
+        <property name="shards" ref="shardSet"></property>
+    </bean>
+
+   
+	<!-- 配置路由规则结束 -->
+
+	<!-- 事务配置 -->
+	 <tx:annotation-driven transaction-manager="txManager" proxy-target-class="true" />
+
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+    <bean id="txManager"
+        class="com.alibaba.cobarclient.transaction.BestEffortMultiDataSourceTransactionManager">
+        <property name="shards" ref="shardSet"></property>
+    </bean>
+
+
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocations" value="classpath:/sqlmap-config.xml"></property>
+    </bean>
+
+    <bean id="sqlMapClientTemplate" class="com.alibaba.cobarclient.MysdalSqlMapClientTemplate">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+        <property name="shards" ref="shardSet"></property>
+        <property name="router" ref="router"></property>
+    </bean>
+
+	<!-- iBatis SQL map定义。 -->
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<!-- 这里配置的dataSource0为默认的数据源,如果找不到数据库的话则到该数据源中查找 -->
+		<property name="dataSource" ref="dataSource0" />
+		<property name="configLocation">
+			<value>classpath:/sqlmap-config.xml</value>
+		</property>
+	</bean>
+
+	<!-- 工程里一定要使用此工程模板，不能再使用ibatis原生的api，不然有的情况会不经过cobar的过滤 -->
+	<bean id="sqlMapClientTemplate" class="com.alibaba.cobar.client.CobarSqlMapClientTemplate">
+		<property name="sqlMapClient" ref="sqlMapClient" />
+		<property name="cobarDataSourceService" ref="dataSources" />
+		<property name="router" ref="internalRouter" />
+		<property name="sqlAuditor">
+			<bean class="com.alibaba.cobar.client.audit.SimpleSqlAuditor" />
+		</property>
+		<property name="profileLongTimeRunningSql" value="true" />
+		<property name="longTimeRunningSqlIntervalThreshold" value="3600000" />
+	</bean>
+
+
+</beans>

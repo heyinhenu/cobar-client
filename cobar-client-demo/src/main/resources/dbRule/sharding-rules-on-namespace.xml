@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>     
+<!DOCTYPE rules SYSTEM "rules.dtd">     
+<rules>
+	<rule>
+		<namespace>IUser</namespace>
+		<shardingExpression>hash.apply(id) == 0</shardingExpression>
+		<shards>partition0</shards>
+	</rule>
+	<rule>
+		<namespace>IUser</namespace>
+		<shardingExpression>hash.apply(id) == 1</shardingExpression>
+		<shards>partition1</shards>
+	</rule>
+	<rule>
+		<namespace>IUser</namespace>
+		<shardingExpression>hash.apply(id) == 2</shardingExpression>
+		<shards>partition2</shards>
+	</rule>
+</rules>
