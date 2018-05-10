@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client;
+package com.alibaba.cobar.client;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -31,14 +31,13 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  * of {@link CobarSqlMapClientTemplate}.<br>
  * <br>
  * Feature requested by Yao Ming.
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public class CobarSqlMapClientDaoSupport extends SqlMapClientDaoSupport {
 
-    public int batchInsert(final String statementName, final Collection<?> entities)
-            throws DataAccessException {
+    public int batchInsert(final String statementName, final Collection<?> entities) throws DataAccessException {
         if (isPartitionBehaviorEnabled()) {
             int counter = 0;
             DataAccessException lastEx = null;
@@ -67,8 +66,7 @@ public class CobarSqlMapClientDaoSupport extends SqlMapClientDaoSupport {
         }
     }
 
-    public int batchDelete(final String statementName, final Collection<?> entities)
-            throws DataAccessException {
+    public int batchDelete(final String statementName, final Collection<?> entities) throws DataAccessException {
         if (isPartitionBehaviorEnabled()) {
             int counter = 0;
             DataAccessException lastEx = null;
@@ -96,8 +94,7 @@ public class CobarSqlMapClientDaoSupport extends SqlMapClientDaoSupport {
         }
     }
 
-    public int batchUpdate(final String statementName, final Collection<?> entities)
-            throws DataAccessException {
+    public int batchUpdate(final String statementName, final Collection<?> entities) throws DataAccessException {
         if (isPartitionBehaviorEnabled()) {
             int counter = 0;
             DataAccessException lastEx = null;
@@ -128,8 +125,7 @@ public class CobarSqlMapClientDaoSupport extends SqlMapClientDaoSupport {
 
     protected boolean isPartitionBehaviorEnabled() {
         if (getSqlMapClientTemplate() instanceof CobarSqlMapClientTemplate) {
-            return ((CobarSqlMapClientTemplate) getSqlMapClientTemplate())
-                    .isPartitioningBehaviorEnabled();
+            return ((CobarSqlMapClientTemplate) getSqlMapClientTemplate()).isPartitioningBehaviorEnabled();
         }
         return false;
     }

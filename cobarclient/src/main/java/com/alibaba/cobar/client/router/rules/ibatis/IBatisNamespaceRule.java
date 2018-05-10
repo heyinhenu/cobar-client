@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules.ibatis;
+package com.alibaba.cobar.client.router.rules.ibatis;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
+
 /**
  * Vertical Partitioning Rule which maps iBatis's namespace in sqlmap file to entity/table type.<br>
- * 
+ *
  * @author fujohnwang
- * @since  1.0 
+ * @since 1.0
  */
 public class IBatisNamespaceRule extends AbstractIBatisOrientedRule {
-    
+
     public IBatisNamespaceRule(String pattern, String action) {
         super(pattern, action);
     }
@@ -39,8 +40,7 @@ public class IBatisNamespaceRule extends AbstractIBatisOrientedRule {
 
     @Override
     public String toString() {
-        return "IBatisNamespaceRule [getAction()=" + getAction() + ", getTypePattern()="
-                + getTypePattern() + "]";
+        return "IBatisNamespaceRule [getAction()=" + getAction() + ", getTypePattern()=" + getTypePattern() + "]";
     }
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config;
+package com.alibaba.cobar.client.router.config;
 
 import java.util.List;
 
@@ -24,13 +24,12 @@ import com.alibaba.cobar.client.router.config.vo.InternalRule;
  * directly in spring's IoC container.<br>
  * that's, declaring bean definitions of {@link InternalRule} directly as
  * dependency of {@link StaticCobarClientInternalRouterFactoryBean}.
- * 
+ *
  * @author fujohnwang
  * @see DefaultCobarClientInternalRouterXmlFactoryBean for another alternative
- *      which will load rule definitions from external xml.
+ * which will load rule definitions from external xml.
  */
-public class StaticCobarClientInternalRouterFactoryBean extends
-        AbstractCobarClientInternalRouterFactoryBean {
+public class StaticCobarClientInternalRouterFactoryBean extends AbstractCobarClientInternalRouterFactoryBean {
 
     private List<InternalRule> rules;
 

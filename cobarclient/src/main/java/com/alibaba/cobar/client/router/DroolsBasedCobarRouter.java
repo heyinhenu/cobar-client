@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router;
+package com.alibaba.cobar.client.router;
 
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 import com.alibaba.cobar.client.router.support.RoutingResult;
 
 /**
  * TODO when rule numbers increase incredibly, we can introduce a rule engine like drools to enhance the performance of rule matching.<br>
- * 
- * @author fujohnwang
  *
+ * @author fujohnwang
  */
 public class DroolsBasedCobarRouter implements ICobarRouter<IBatisRoutingFact> {
 
-	public RoutingResult doRoute(IBatisRoutingFact routingFact)
-			throws RoutingException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public RoutingResult doRoute(IBatisRoutingFact routingFact) throws RoutingException {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

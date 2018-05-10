@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config;
+package com.alibaba.cobar.client.router.config;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,35 +28,30 @@ import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 /**
  * read in DSL style configuration and construct/assemble corresponding rules,
  * for example:<br>
- * 
+ *
  * <pre>
- *  route 
- *      fact{namespace=some((;sqlmap=com.alibaba....)? ;shard=expression)?} 
- *  to 
+ *  route
+ *      fact{namespace=some((;sqlmap=com.alibaba....)? ;shard=expression)?}
+ *  to
  *      shards{ds1, ds2, ...}
- *      
- *  route 
- *      fact{namespace=some((;sqlmap=com.alibaba....)? ;shard=expression)?} 
+ *
+ *  route
+ *      fact{namespace=some((;sqlmap=com.alibaba....)? ;shard=expression)?}
  *  to
  * shards{ds1, ds2, ...}
- * 
+ *
  * <pre>
  * TBD if needed.
- * 
+ *
  * @author fujohnwang
  */
-public class CobarInternalRouterDSLFactoryBean extends
-        AbstractCobarInternalRouterConfigurationFactoryBean {
+public class CobarInternalRouterDSLFactoryBean extends AbstractCobarInternalRouterConfigurationFactoryBean {
 
     @Override
-    protected void assembleRulesForRouter(
-                                          CobarClientInternalRouter router,
-                                          Resource configLocation,
-                                          Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionShardingRules,
-                                          Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionRules,
-                                          Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceShardingRules,
-                                          Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceRules)
-            throws IOException {
+    protected void assembleRulesForRouter(CobarClientInternalRouter router, Resource configLocation,
+        Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionShardingRules, Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionRules,
+        Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceShardingRules, Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceRules)
+        throws IOException {
         // TODO Auto-generated method stub
 
     }

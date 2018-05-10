@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.vo;
+package com.alibaba.cobar.client.support.vo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,17 +26,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
+
 /**
- * 
  * TODO Comment of CobarHive
- * @author fujohnwang
  *
+ * @author fujohnwang
  */
 public class CobarMRBase {
 
     private Map<String, List<Object>> resources = new HashMap<String, List<Object>>();
-    private Map<String, Lock>         locks     = new HashMap<String, Lock>();
-    private Set<String>               keys      = new HashSet<String>();
+    private Map<String, Lock> locks = new HashMap<String, Lock>();
+    private Set<String> keys = new HashSet<String>();
 
     public CobarMRBase(String[] keys) {
         this(Arrays.asList(keys));
@@ -44,8 +44,7 @@ public class CobarMRBase {
 
     public CobarMRBase(List<String> keys) {
         if (CollectionUtils.isEmpty(keys)) {
-            throw new IllegalArgumentException(
-                    "empty collection is invalid for hive to spawn data holders.");
+            throw new IllegalArgumentException("empty collection is invalid for hive to spawn data holders.");
         }
         this.keys.addAll(keys);
         initResourceHolders();
@@ -54,8 +53,7 @@ public class CobarMRBase {
 
     public CobarMRBase(Set<String> keys) {
         if (CollectionUtils.isEmpty(keys)) {
-            throw new IllegalArgumentException(
-                    "empty collection is invalid for hive to spawn data holders.");
+            throw new IllegalArgumentException("empty collection is invalid for hive to spawn data holders.");
         }
         this.keys.addAll(keys);
         initResourceHolders();
@@ -74,20 +72,16 @@ public class CobarMRBase {
         }
     }
 
-    public Map<String, List<Object>> getResources()
-    {
+    public Map<String, List<Object>> getResources() {
         return this.resources;
     }
-    
-    public <T> void emit(String key, T entity)
-    {
+
+    public <T> void emit(String key, T entity) {
         Lock lock = locks.get(key);
         lock.lock();
-        try{
+        try {
             resources.get(key).add(entity);
-        }
-        finally
-        {
+        } finally {
             lock.unlock();
         }
     }

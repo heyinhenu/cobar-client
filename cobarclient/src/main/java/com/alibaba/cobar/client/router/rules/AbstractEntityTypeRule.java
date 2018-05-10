@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules;
+package com.alibaba.cobar.client.router.rules;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -22,10 +22,10 @@ import com.alibaba.cobar.client.router.rules.ibatis.AbstractIBatisOrientedRule;
 
 /**
  * vertical partitioning oriented rule that matches against entity/table type.<br>
- * 
- * @author fujohnwang
+ *
  * @param <F>, the fact type
  * @param <T>, the action result type
+ * @author fujohnwang
  * @see AbstractIBatisOrientedRule
  */
 public abstract class AbstractEntityTypeRule<F, T> implements IRoutingRule<F, T> {
@@ -68,23 +68,30 @@ public abstract class AbstractEntityTypeRule<F, T> implements IRoutingRule<F, T>
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AbstractEntityTypeRule other = (AbstractEntityTypeRule) obj;
         if (action == null) {
-            if (other.action != null)
+            if (other.action != null) {
                 return false;
-        } else if (!action.equals(other.action))
+            }
+        } else if (!action.equals(other.action)) {
             return false;
+        }
         if (typePatten == null) {
-            if (other.typePatten != null)
+            if (other.typePatten != null) {
                 return false;
-        } else if (!typePatten.equals(other.typePatten))
+            }
+        } else if (!typePatten.equals(other.typePatten)) {
             return false;
+        }
         return true;
     }
 

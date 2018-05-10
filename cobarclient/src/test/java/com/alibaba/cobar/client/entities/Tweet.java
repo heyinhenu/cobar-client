@@ -1,24 +1,28 @@
 package com.alibaba.cobar.client.entities;
 
 public class Tweet {
+
     private Long id;
     private String tweet;
-    
-    public Tweet(){}
-    
-    public Tweet(String t){
+
+    public Tweet() {}
+
+    public Tweet(String t) {
         tweet = t;
     }
-    
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getTweet() {
         return tweet;
     }
+
     public void setTweet(String tweet) {
         this.tweet = tweet;
     }
@@ -34,23 +38,30 @@ public class Tweet {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Tweet other = (Tweet) obj;
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         if (tweet == null) {
-            if (other.tweet != null)
+            if (other.tweet != null) {
                 return false;
-        } else if (!tweet.equals(other.tweet))
+            }
+        } else if (!tweet.equals(other.tweet)) {
             return false;
+        }
         return true;
     }
 
@@ -58,5 +69,5 @@ public class Tweet {
     public String toString() {
         return "Tweet [id=" + id + ", tweet=" + tweet + "]";
     }
-    
+
 }

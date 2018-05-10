@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.utils;
+package com.alibaba.cobar.client.support.utils;
 
 public interface Predicate {
+
     public boolean evaluate(Object object);
 }

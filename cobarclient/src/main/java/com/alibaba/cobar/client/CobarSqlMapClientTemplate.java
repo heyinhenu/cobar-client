@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client;
+package com.alibaba.cobar.client;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -111,21 +111,21 @@ import com.ibatis.sqlmap.engine.mapping.sql.stat.StaticSql;
  * bound to thread local before. If we process CUD in concurrency, the contract
  * between spring's transaction manager and data access code can't be
  * guaranteed.<br>
- * 
+ *
  * @author fujohnwang
- * @since 1.0
  * @see MultipleDataSourcesTransactionManager for transaction management
- *      alternative.
+ * alternative.
+ * @since 1.0
  */
 public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements DisposableBean {
-    private transient Logger                     logger                          = LoggerFactory
-                                                                                         .getLogger(CobarSqlMapClientTemplate.class);
 
-    private static final String                  DEFAULT_DATASOURCE_IDENTITY     = "_CobarSqlMapClientTemplate_default_data_source_name";
+    private transient Logger logger = LoggerFactory.getLogger(CobarSqlMapClientTemplate.class);
 
-    private String                               defaultDataSourceName           = DEFAULT_DATASOURCE_IDENTITY;
+    private static final String DEFAULT_DATASOURCE_IDENTITY = "_CobarSqlMapClientTemplate_default_data_source_name";
 
-    private List<ExecutorService>                internalExecutorServiceRegistry = new ArrayList<ExecutorService>();
+    private String defaultDataSourceName = DEFAULT_DATASOURCE_IDENTITY;
+
+    private List<ExecutorService> internalExecutorServiceRegistry = new ArrayList<ExecutorService>();
     /**
      * if we want to access multiple database partitions, we need a collection
      * of data source dependencies.<br> {@link ICobarDataSourceService} is a
@@ -135,7 +135,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * If a router is injected, a dataSourceLocator dependency should be
      * injected too. <br>
      */
-    private ICobarDataSourceService              cobarDataSourceService;
+    private ICobarDataSourceService cobarDataSourceService;
 
     /**
      * To enable database partitions access, an {@link ICobarRouter} is a must
@@ -143,15 +143,15 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * if no router is found, the CobarSqlMapClientTemplate will act with
      * behaviors like its parent, the SqlMapClientTemplate.
      */
-    private ICobarRouter<IBatisRoutingFact>      router;
+    private ICobarRouter<IBatisRoutingFact> router;
 
     /**
      * if you want to do SQL auditing, inject an {@link ISqlAuditor} for use.<br>
      * a sibling ExecutorService would be prefered too, which will be used to
      * execute {@link ISqlAuditor} asynchronously.
      */
-    private ISqlAuditor                          sqlAuditor;
-    private ExecutorService                      sqlAuditorExecutor;
+    private ISqlAuditor sqlAuditor;
+    private ExecutorService sqlAuditorExecutor;
 
     /**
      * setup ExecutorService for data access requests on each data sources.<br>
@@ -159,21 +159,21 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * is the ExecutorService that will be used to execute query requests on the
      * key's data source.
      */
-    private Map<String, ExecutorService>         dataSourceSpecificExecutors     = new HashMap<String, ExecutorService>();
+    private Map<String, ExecutorService> dataSourceSpecificExecutors = new HashMap<String, ExecutorService>();
 
-    private IConcurrentRequestProcessor          concurrentRequestProcessor;
+    private IConcurrentRequestProcessor concurrentRequestProcessor;
 
     /**
      * timeout threshold to indicate how long the concurrent data access request
      * should time out.<br>
      * time unit in milliseconds.<br>
      */
-    private int                                  defaultQueryTimeout             = 100;
+    private int defaultQueryTimeout = 100;
     /**
      * indicator to indicate whether to log/profile long-time-running SQL
      */
-    private boolean                              profileLongTimeRunningSql       = false;
-    private long                                 longTimeRunningSqlIntervalThreshold;
+    private boolean profileLongTimeRunningSql = false;
+    private long longTimeRunningSqlIntervalThreshold;
 
     /**
      * In fact, application can do data-merging in their application code after
@@ -182,7 +182,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * provide a relationship mapping between the sql action and the merging
      * logic provider.
      */
-    private Map<String, IMerger<Object, Object>> mergers                         = new HashMap<String, IMerger<Object, Object>>();
+    private Map<String, IMerger<Object, Object>> mergers = new HashMap<String, IMerger<Object, Object>>();
 
     /**
      * NOTE: don't use this method for distributed data access.<br>
@@ -223,25 +223,21 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
     }
 
     @Override
-    public void delete(final String statementName, final Object parameterObject,
-                       int requiredRowsAffected) throws DataAccessException {
+    public void delete(final String statementName, final Object parameterObject, int requiredRowsAffected) throws DataAccessException {
         Integer rowAffected = this.delete(statementName, parameterObject);
         if (rowAffected != requiredRowsAffected) {
-            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(statementName,
-                    requiredRowsAffected, rowAffected);
+            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(statementName, requiredRowsAffected, rowAffected);
         }
     }
 
     @Override
-    public int delete(final String statementName, final Object parameterObject)
-            throws DataAccessException {
+    public int delete(final String statementName, final Object parameterObject) throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
 
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
 
                     SqlMapClientCallback action = new SqlMapClientCallback() {
@@ -269,9 +265,8 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
@@ -284,29 +279,28 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
     /**
      * We support insert in 3 ways here:<br>
-     * 
+     *
      * <pre>
      *      1- if no partitioning requirement is found:
      *          the insert will be delegated to the default insert behavior of {@link SqlMapClientTemplate};
      *      2- if partitioning support is enabled and 'parameterObject' is NOT a type of collection:
-     *          we will search for routing rules against it and execute insertion as per the rule if found, 
+     *          we will search for routing rules against it and execute insertion as per the rule if found,
      *          if no rule is found, the default data source will be used.
      *      3- if partitioning support is enabled and 'parameterObject' is a type of {@link BatchInsertTask}:
      *           this is a specific solution, mainly aimed for "insert into ..values(), (), ()" style insertion.
-     *           In this situation, we will regroup the entities in the original collection into several sub-collections as per routing rules, 
+     *           In this situation, we will regroup the entities in the original collection into several sub-collections as per routing rules,
      *           and submit the regrouped sub-collections to their corresponding target data sources.
-     *           One thing to NOTE: in this situation, although we return a object as the result of insert, but it doesn't mean any thing to you, 
-     *           because, "insert into ..values(), (), ()" style SQL doesn't return you a sensible primary key in this way. 
+     *           One thing to NOTE: in this situation, although we return a object as the result of insert, but it doesn't mean any thing to you,
+     *           because, "insert into ..values(), (), ()" style SQL doesn't return you a sensible primary key in this way.
      *           this, function is optional, although we return a list of sub-insert result, but don't guarantee precise semantics.
      * </pre>
-     * 
+     *
      * we can't just decide the execution branch on the Collection<?> type of
      * the 'parameterObject', because sometimes, maybe the application does want
      * to do insertion as per the parameterObject of its own.<br>
      */
     @Override
-    public Object insert(final String statementName, final Object parameterObject)
-            throws DataAccessException {
+    public Object insert(final String statementName, final Object parameterObject) throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
         long startTimestamp = System.currentTimeMillis();
         try {
@@ -322,9 +316,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                  */
                 if (parameterObject != null && parameterObject instanceof BatchInsertTask) {
                     // map collection into mapping of data source and sub collection of entities
-                    logger.info(
-                            "start to prepare batch insert operation with parameter type of:{}.",
-                            parameterObject.getClass());
+                    logger.info("start to prepare batch insert operation with parameter type of:{}.", parameterObject.getClass());
 
                     return batchInsertAfterReordering(statementName, parameterObject);
 
@@ -335,8 +327,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                             return executor.insert(statementName, parameterObject);
                         }
                     };
-                    SortedMap<String, DataSource> resultDataSources = lookupDataSourcesByRouter(
-                            statementName, parameterObject);
+                    SortedMap<String, DataSource> resultDataSources = lookupDataSourcesByRouter(statementName, parameterObject);
                     if (MapUtils.isEmpty(resultDataSources) || resultDataSources.size() == 1) {
                         targetDataSource = getSqlMapClient().getDataSource(); // fall back to default data source.
                         if (resultDataSources.size() == 1) {
@@ -355,9 +346,8 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
@@ -367,21 +357,15 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * we reorder the collection of entities in concurrency and commit them in
      * sequence, because we have to conform to the infrastructure of spring's
      * transaction management layer.
-     * 
-     * @param statementName
-     * @param parameterObject
-     * @return
      */
-    private Object batchInsertAfterReordering(final String statementName,
-                                              final Object parameterObject) {
+    private Object batchInsertAfterReordering(final String statementName, final Object parameterObject) {
         Set<String> keys = new HashSet<String>();
         keys.add(getDefaultDataSourceName());
         keys.addAll(getCobarDataSourceService().getDataSources().keySet());
 
         final CobarMRBase mrbase = new CobarMRBase(keys);
 
-        ExecutorService executor = createCustomExecutorService(Runtime.getRuntime()
-                .availableProcessors(), "batchInsertAfterReordering");
+        ExecutorService executor = createCustomExecutorService(Runtime.getRuntime().availableProcessors(), "batchInsertAfterReordering");
         try {
             final StringBuffer exceptionStaktrace = new StringBuffer();
 
@@ -395,19 +379,15 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 Runnable task = new Runnable() {
                     public void run() {
                         try {
-                            SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(
-                                    statementName, entity);
+                            SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, entity);
                             if (MapUtils.isEmpty(dsMap)) {
                                 logger
-                                        .info(
-                                                "can't find routing rule for {} with parameter {}, so use default data source for it.",
-                                                statementName, entity);
+                                    .info("can't find routing rule for {} with parameter {}, so use default data source for it.", statementName, entity);
                                 mrbase.emit(getDefaultDataSourceName(), entity);
                             } else {
                                 if (dsMap.size() > 1) {
                                     throw new IllegalArgumentException(
-                                            "unexpected routing result, found more than 1 target data source for current entity:"
-                                                    + entity);
+                                        "unexpected routing result, found more than 1 target data source for current entity:" + entity);
                                 }
                                 mrbase.emit(dsMap.firstKey(), entity);
                             }
@@ -423,15 +403,12 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
             try {
                 latch.await();
             } catch (InterruptedException e) {
-                throw new ConcurrencyFailureException(
-                        "unexpected interruption when re-arranging parameter collection into sub-collections ",
-                        e);
+                throw new ConcurrencyFailureException("unexpected interruption when re-arranging parameter collection into sub-collections ", e);
             }
 
             if (exceptionStaktrace.length() > 0) {
                 throw new ConcurrencyFailureException(
-                        "unpected exception when re-arranging parameter collection, check previous log for details.\n"
-                                + exceptionStaktrace);
+                    "unpected exception when re-arranging parameter collection, check previous log for details.\n" + exceptionStaktrace);
             }
         } finally {
             executor.shutdown();
@@ -480,43 +457,36 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
     @SuppressWarnings("unchecked")
     @Override
-    public List queryForList(String statementName, int skipResults, int maxResults)
-            throws DataAccessException {
+    public List queryForList(String statementName, int skipResults, int maxResults) throws DataAccessException {
         return this.queryForList(statementName, null, skipResults, maxResults);
     }
 
     @SuppressWarnings("unchecked")
-    protected List queryForList(final String statementName, final Object parameterObject,
-                                final Integer skipResults, final Integer maxResults) {
+    protected List queryForList(final String statementName, final Object parameterObject, final Integer skipResults, final Integer maxResults) {
         auditSqlIfNecessary(statementName, parameterObject);
 
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
                     SqlMapClientCallback callback = null;
                     if (skipResults == null || maxResults == null) {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
                                 return executor.queryForList(statementName, parameterObject);
                             }
                         };
                     } else {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
-                                return executor.queryForList(statementName, parameterObject,
-                                        skipResults, maxResults);
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                                return executor.queryForList(statementName, parameterObject, skipResults, maxResults);
                             }
                         };
                     }
 
                     List<Object> originalResultList = executeInConcurrency(callback, dsMap);
-                    if (MapUtils.isNotEmpty(getMergers())
-                            && getMergers().containsKey(statementName)) {
+                    if (MapUtils.isNotEmpty(getMergers()) && getMergers().containsKey(statementName)) {
                         IMerger<Object, Object> merger = getMergers().get(statementName);
                         if (merger != null) {
                             return (List) merger.merge(originalResultList);
@@ -540,9 +510,8 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
@@ -550,17 +519,14 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
     @SuppressWarnings("unchecked")
     @Override
-    public List queryForList(final String statementName, final Object parameterObject,
-                             final int skipResults, final int maxResults)
-            throws DataAccessException {
-        return this.queryForList(statementName, parameterObject, Integer.valueOf(skipResults),
-                Integer.valueOf(maxResults));
+    public List queryForList(final String statementName, final Object parameterObject, final int skipResults, final int maxResults)
+        throws DataAccessException {
+        return this.queryForList(statementName, parameterObject, Integer.valueOf(skipResults), Integer.valueOf(maxResults));
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public List queryForList(final String statementName, final Object parameterObject)
-            throws DataAccessException {
+    public List queryForList(final String statementName, final Object parameterObject) throws DataAccessException {
         return this.queryForList(statementName, parameterObject, null, null);
     }
 
@@ -572,31 +538,25 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map queryForMap(final String statementName, final Object parameterObject,
-                           final String keyProperty, final String valueProperty)
-            throws DataAccessException {
+    public Map queryForMap(final String statementName, final Object parameterObject, final String keyProperty, final String valueProperty)
+        throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
                     SqlMapClientCallback callback = null;
                     if (valueProperty != null) {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
-                                return executor.queryForMap(statementName, parameterObject,
-                                        keyProperty, valueProperty);
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                                return executor.queryForMap(statementName, parameterObject, keyProperty, valueProperty);
                             }
                         };
                     } else {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
-                                return executor.queryForMap(statementName, parameterObject,
-                                        keyProperty);
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                                return executor.queryForMap(statementName, parameterObject, keyProperty);
                             }
                         };
                     }
@@ -613,17 +573,15 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
             if (valueProperty == null) {
                 return super.queryForMap(statementName, parameterObject, keyProperty);
             } else {
-                return super
-                        .queryForMap(statementName, parameterObject, keyProperty, valueProperty);
+                return super.queryForMap(statementName, parameterObject, keyProperty, valueProperty);
             }
         } finally {
             if (isProfileLongTimeRunningSql()) {
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
@@ -632,46 +590,38 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
     @SuppressWarnings("unchecked")
     @Override
-    public Map queryForMap(final String statementName, final Object parameterObject,
-                           final String keyProperty) throws DataAccessException {
+    public Map queryForMap(final String statementName, final Object parameterObject, final String keyProperty) throws DataAccessException {
         return this.queryForMap(statementName, parameterObject, keyProperty, null);
     }
 
     @Override
-    public Object queryForObject(final String statementName, final Object parameterObject,
-                                 final Object resultObject) throws DataAccessException {
+    public Object queryForObject(final String statementName, final Object parameterObject, final Object resultObject) throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
                     SqlMapClientCallback callback = null;
                     if (resultObject == null) {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
                                 return executor.queryForObject(statementName, parameterObject);
                             }
                         };
                     } else {
                         callback = new SqlMapClientCallback() {
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
-                                return executor.queryForObject(statementName, parameterObject,
-                                        resultObject);
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                                return executor.queryForObject(statementName, parameterObject, resultObject);
                             }
                         };
                     }
                     List<Object> resultList = executeInConcurrency(callback, dsMap);
-                    @SuppressWarnings("unchecked")
-                    Collection<Object> filteredResultList = CollectionUtils.select(resultList,
-                            new Predicate() {
-                                public boolean evaluate(Object item) {
-                                    return item != null;
-                                }
-                            });
+                    @SuppressWarnings("unchecked") Collection<Object> filteredResultList = CollectionUtils.select(resultList, new Predicate() {
+                        public boolean evaluate(Object item) {
+                            return item != null;
+                        }
+                    });
                     if (filteredResultList.size() > 1) {
                         throw new IncorrectResultSizeDataAccessException(1);
                     }
@@ -691,17 +641,15 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
     }
 
     @Override
-    public Object queryForObject(final String statementName, final Object parameterObject)
-            throws DataAccessException {
+    public Object queryForObject(final String statementName, final Object parameterObject) throws DataAccessException {
         return this.queryForObject(statementName, parameterObject, null);
     }
 
@@ -715,8 +663,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * not supported.
      */
     @Override
-    public PaginatedList queryForPaginatedList(String statementName, int pageSize)
-            throws DataAccessException {
+    public PaginatedList queryForPaginatedList(String statementName, int pageSize) throws DataAccessException {
         return super.queryForPaginatedList(statementName, pageSize);
     }
 
@@ -725,28 +672,25 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      * not supported.
      */
     @Override
-    public PaginatedList queryForPaginatedList(String statementName, Object parameterObject,
-                                               int pageSize) throws DataAccessException {
+    public PaginatedList queryForPaginatedList(String statementName, Object parameterObject, int pageSize) throws DataAccessException {
         return super.queryForPaginatedList(statementName, parameterObject, pageSize);
     }
 
     @Override
-    public void queryWithRowHandler(final String statementName, final Object parameterObject,
-                                    final RowHandler rowHandler) throws DataAccessException {
+    public void queryWithRowHandler(final String statementName, final Object parameterObject, final RowHandler rowHandler)
+        throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
 
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
                     SqlMapClientCallback callback = null;
                     if (parameterObject == null) {
                         callback = new SqlMapClientCallback() {
 
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
                                 executor.queryWithRowHandler(statementName, rowHandler);
                                 return null;
                             }
@@ -754,10 +698,8 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                     } else {
                         callback = new SqlMapClientCallback() {
 
-                            public Object doInSqlMapClient(SqlMapExecutor executor)
-                                    throws SQLException {
-                                executor.queryWithRowHandler(statementName, parameterObject,
-                                        rowHandler);
+                            public Object doInSqlMapClient(SqlMapExecutor executor) throws SQLException {
+                                executor.queryWithRowHandler(statementName, parameterObject, rowHandler);
                                 return null;
                             }
                         };
@@ -776,40 +718,34 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
     }
 
     @Override
-    public void queryWithRowHandler(String statementName, RowHandler rowHandler)
-            throws DataAccessException {
+    public void queryWithRowHandler(String statementName, RowHandler rowHandler) throws DataAccessException {
         this.queryWithRowHandler(statementName, null, rowHandler);
     }
 
     @Override
-    public void update(String statementName, Object parameterObject, int requiredRowsAffected)
-            throws DataAccessException {
+    public void update(String statementName, Object parameterObject, int requiredRowsAffected) throws DataAccessException {
         int rowAffected = this.update(statementName, parameterObject);
         if (rowAffected != requiredRowsAffected) {
-            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(statementName,
-                    requiredRowsAffected, rowAffected);
+            throw new JdbcUpdateAffectedIncorrectNumberOfRowsException(statementName, requiredRowsAffected, rowAffected);
         }
     }
 
     @Override
-    public int update(final String statementName, final Object parameterObject)
-            throws DataAccessException {
+    public int update(final String statementName, final Object parameterObject) throws DataAccessException {
         auditSqlIfNecessary(statementName, parameterObject);
 
         long startTimestamp = System.currentTimeMillis();
         try {
             if (isPartitioningBehaviorEnabled()) {
-                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName,
-                        parameterObject);
+                SortedMap<String, DataSource> dsMap = lookupDataSourcesByRouter(statementName, parameterObject);
                 if (!MapUtils.isEmpty(dsMap)) {
 
                     SqlMapClientCallback action = new SqlMapClientCallback() {
@@ -833,9 +769,8 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
                 long interval = System.currentTimeMillis() - startTimestamp;
                 if (interval > getLongTimeRunningSqlIntervalThreshold()) {
                     logger
-                            .warn(
-                                    "SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.",
-                                    new Object[] { statementName, parameterObject, interval });
+                        .warn("SQL Statement [{}] with parameter object [{}] ran out of the normal time range, it consumed [{}] milliseconds.", new Object[]{
+                            statementName, parameterObject, interval});
                 }
             }
         }
@@ -846,13 +781,11 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         return this.update(statementName, null);
     }
 
-    protected SortedMap<String, DataSource> lookupDataSourcesByRouter(final String statementName,
-                                                                      final Object parameterObject) {
+    protected SortedMap<String, DataSource> lookupDataSourcesByRouter(final String statementName, final Object parameterObject) {
         SortedMap<String, DataSource> resultMap = new TreeMap<String, DataSource>();
 
         if (getRouter() != null && getCobarDataSourceService() != null) {
-            List<String> dsSet = getRouter().doRoute(
-                    new IBatisRoutingFact(statementName, parameterObject)).getResourceIdentities();
+            List<String> dsSet = getRouter().doRoute(new IBatisRoutingFact(statementName, parameterObject)).getResourceIdentities();
             if (CollectionUtils.isNotEmpty(dsSet)) {
                 Collections.sort(dsSet);
                 for (String dsName : dsSet) {
@@ -883,8 +816,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
             // Obtain JDBC Connection to operate on...
             try {
-                springCon = (transactionAware ? dataSource.getConnection() : DataSourceUtils
-                        .doGetConnection(dataSource));
+                springCon = (transactionAware ? dataSource.getConnection() : DataSourceUtils.doGetConnection(dataSource));
                 session.setUserConnection(springCon);
             } catch (SQLException ex) {
                 throw new CannotGetJdbcConnectionException("Could not get JDBC Connection", ex);
@@ -893,11 +825,9 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
             try {
                 return action.doInSqlMapClient(session);
             } catch (SQLException ex) {
-                throw new SQLErrorCodeSQLExceptionTranslator().translate("SqlMapClient operation",
-                        null, ex);
+                throw new SQLErrorCodeSQLExceptionTranslator().translate("SqlMapClient operation", null, ex);
             } catch (Throwable t) {
-                throw new UncategorizedCobarClientException(
-                        "unknown excepton when performing data access operation.", t);
+                throw new UncategorizedCobarClientException("unknown excepton when performing data access operation.", t);
             } finally {
                 try {
                     if (springCon != null) {
@@ -917,8 +847,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         }
     }
 
-    public List<Object> executeInConcurrency(SqlMapClientCallback action,
-                                             SortedMap<String, DataSource> dsMap) {
+    public List<Object> executeInConcurrency(SqlMapClientCallback action, SortedMap<String, DataSource> dsMap) {
         List<ConcurrentRequest> requests = new ArrayList<ConcurrentRequest>();
 
         for (Map.Entry<String, DataSource> entry : dsMap.entrySet()) {
@@ -938,8 +867,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         super.afterPropertiesSet();
         if (isProfileLongTimeRunningSql()) {
             if (longTimeRunningSqlIntervalThreshold <= 0) {
-                throw new IllegalArgumentException(
-                        "'longTimeRunningSqlIntervalThreshold' should have a positive value if 'profileLongTimeRunningSql' is set to true");
+                throw new IllegalArgumentException("'longTimeRunningSqlIntervalThreshold' should have a positive value if 'profileLongTimeRunningSql' is set to true");
             }
         }
         setupDefaultExecutorServicesIfNecessary();
@@ -980,8 +908,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
      */
     private void setUpDefaultSqlAuditorExecutorIfNecessary() {
         if (sqlAuditor != null && sqlAuditorExecutor == null) {
-            sqlAuditorExecutor = createCustomExecutorService(1,
-                    "setUpDefaultSqlAuditorExecutorIfNecessary");
+            sqlAuditorExecutor = createCustomExecutorService(1, "setUpDefaultSqlAuditorExecutorIfNecessary");
             // 1. register executor for disposing later explicitly
             internalExecutorServiceRegistry.add(sqlAuditorExecutor);
             // 2. dispose executor implicitly 
@@ -1014,8 +941,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
 
             if (MapUtils.isEmpty(getDataSourceSpecificExecutors())) {
 
-                Set<CobarDataSourceDescriptor> dataSourceDescriptors = getCobarDataSourceService()
-                        .getDataSourceDescriptors();
+                Set<CobarDataSourceDescriptor> dataSourceDescriptors = getCobarDataSourceService().getDataSourceDescriptors();
                 for (CobarDataSourceDescriptor descriptor : dataSourceDescriptors) {
                     ExecutorService executor = createExecutorForSpecificDataSource(descriptor);
                     getDataSourceSpecificExecutors().put(descriptor.getIdentity(), executor);
@@ -1029,7 +955,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
     private ExecutorService createExecutorForSpecificDataSource(CobarDataSourceDescriptor descriptor) {
         final String identity = descriptor.getIdentity();
         final ExecutorService executor = createCustomExecutorService(descriptor.getPoolSize(),
-                "createExecutorForSpecificDataSource-" + identity + " data source");
+            "createExecutorForSpecificDataSource-" + identity + " data source");
         // 1. register executor for disposing explicitly
         internalExecutorServiceRegistry.add(executor);
         // 2. dispose executor implicitly
@@ -1056,16 +982,14 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         CobarDataSourceDescriptor descriptor = new CobarDataSourceDescriptor();
         descriptor.setIdentity(identity);
         descriptor.setPoolSize(Runtime.getRuntime().availableProcessors() * 5);
-        getDataSourceSpecificExecutors().put(identity,
-                createExecutorForSpecificDataSource(descriptor));
+        getDataSourceSpecificExecutors().put(identity, createExecutorForSpecificDataSource(descriptor));
     }
 
     protected void auditSqlIfNecessary(final String statementName, final Object parameterObject) {
         if (getSqlAuditor() != null) {
             getSqlAuditorExecutor().execute(new Runnable() {
                 public void run() {
-                    getSqlAuditor().audit(statementName,
-                            getSqlByStatementName(statementName, parameterObject), parameterObject);
+                    getSqlAuditor().audit(statementName, getSqlByStatementName(statementName, parameterObject), parameterObject);
                 }
             });
         }
@@ -1095,8 +1019,7 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         return sqlAuditorExecutor;
     }
 
-    public void setDataSourceSpecificExecutors(
-                                               Map<String, ExecutorService> dataSourceSpecificExecutors) {
+    public void setDataSourceSpecificExecutors(Map<String, ExecutorService> dataSourceSpecificExecutors) {
         if (MapUtils.isEmpty(dataSourceSpecificExecutors)) {
             return;
         }
@@ -1178,15 +1101,13 @@ public class CobarSqlMapClientTemplate extends SqlMapClientTemplate implements D
         }
         ThreadFactory tf = new ThreadFactory() {
             public Thread newThread(Runnable r) {
-                Thread t = new Thread(r, "thread created at CobarSqlMapClientTemplate method ["
-                        + method + "]");
+                Thread t = new Thread(r, "thread created at CobarSqlMapClientTemplate method [" + method + "]");
                 t.setDaemon(true);
                 return t;
             }
         };
         BlockingQueue<Runnable> queueToUse = new LinkedBlockingQueue<Runnable>(coreSize);
-        final ThreadPoolExecutor executor = new ThreadPoolExecutor(coreSize, poolSize, 60,
-                TimeUnit.SECONDS, queueToUse, tf, new ThreadPoolExecutor.CallerRunsPolicy());
+        final ThreadPoolExecutor executor = new ThreadPoolExecutor(coreSize, poolSize, 60, TimeUnit.SECONDS, queueToUse, tf, new ThreadPoolExecutor.CallerRunsPolicy());
 
         return executor;
     }

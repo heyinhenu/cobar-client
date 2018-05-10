@@ -15,18 +15,20 @@ import org.testng.annotations.Test;
 import com.alibaba.cobar.client.router.rules.ibatis.IBatisSqlActionRule;
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
+
 @Test
 public class IBatisSqlActionRuleTest {
-    public static final String   SQL_MAP_ACTION_ID = "com.alibaba.cobar.client.entity.Tweet.delete";
-    public static final String[] EXPECTED_SHARDS   = { "shard1", "shard2", "shard3" };
 
-    private IBatisSqlActionRule  rule;
+    public static final String SQL_MAP_ACTION_ID = "com.alibaba.cobar.client.entity.Tweet.delete";
+    public static final String[] EXPECTED_SHARDS = {"shard1", "shard2", "shard3"};
+
+    private IBatisSqlActionRule rule;
 
     @BeforeMethod
     protected void setUp() throws Exception {
         rule = new IBatisSqlActionRule(SQL_MAP_ACTION_ID, "shard1, shard2, shard3");
     }
-    
+
     @AfterMethod
     protected void tearDown() throws Exception {
         rule = null;
@@ -86,24 +88,22 @@ public class IBatisSqlActionRuleTest {
     public void testSqlActionRuleOnTypePatternNormally() {
         IBatisRoutingFact fact = new IBatisRoutingFact(SQL_MAP_ACTION_ID, null);
         assertTrue(rule.isDefinedAt(fact));
-        
+
         fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.del", null);
         assertFalse(rule.isDefinedAt(fact));
-        
+
         fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet", null);
         assertFalse(rule.isDefinedAt(fact));
-        
+
         fact = new IBatisRoutingFact(null, null);
         assertFalse(rule.isDefinedAt(fact));
     }
-    
-    public void testSqlActionRuleOnTypePatternAbnormally(){
-        try{
+
+    public void testSqlActionRuleOnTypePatternAbnormally() {
+        try {
             rule.isDefinedAt(null);
             fail();
-        }
-        catch(IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             // pass
         }
     }

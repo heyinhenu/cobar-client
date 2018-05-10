@@ -43,136 +43,122 @@ import com.alibaba.cobar.client.datasources.ICobarDataSourceService;
  * {@link org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy}, there is no performance penalty at
  * not.
  *
- *
- *
  * @author fujohnwang
  * @since 1.0, Jan 28, 2010
  */
-public class MultipleDataSourcesTransactionManager extends
-AbstractPlatformTransactionManager implements InitializingBean {
-	protected transient Logger logger = org.slf4j.LoggerFactory
-			.getLogger(MultipleDataSourcesTransactionManager.class);
+public class MultipleDataSourcesTransactionManager extends AbstractPlatformTransactionManager implements InitializingBean {
 
-	private static final long serialVersionUID = 4712923770419532385L;
+    protected transient Logger logger = org.slf4j.LoggerFactory.getLogger(MultipleDataSourcesTransactionManager.class);
 
-	private ICobarDataSourceService cobarDataSourceService;
-	private List<PlatformTransactionManager> transactionManagers = new ArrayList<PlatformTransactionManager>();
+    private static final long serialVersionUID = 4712923770419532385L;
 
-	@Override
-	protected Object doGetTransaction() throws TransactionException {
-		return new ArrayList<DefaultTransactionStatus>();
-	}
+    private ICobarDataSourceService cobarDataSourceService;
+    private List<PlatformTransactionManager> transactionManagers = new ArrayList<PlatformTransactionManager>();
 
-	/**
-	 * We need to disable transaction synchronization so that the shared
-	 * transaction synchronization state will not collide with each other. BUT,
-	 * for LOB creators to use, we have to pay attention here:
-	 * <ul>
-	 * <li>if the LOB creator use standard preparedStatement methods, this
-	 * transaction synchronization setting is OK;</li>
-	 * <li>if the LOB creator don't use standard PS methods, you have to find
-	 * other way to make sure the resources your LOB creator used should be
-	 * cleaned up after the transaction.</li>
-	 * </ul>
-	 */
-	@Override
-	protected void doBegin(Object transactionObject,
-			TransactionDefinition transactionDefinition)
-					throws TransactionException {
-		@SuppressWarnings("unchecked")
-		List<DefaultTransactionStatus> list = (List<DefaultTransactionStatus>) transactionObject;
-		for (PlatformTransactionManager transactionManager : transactionManagers) {
-			DefaultTransactionStatus element = (DefaultTransactionStatus) transactionManager
-					.getTransaction(transactionDefinition);
-			list.add(element);
-		}
-	}
+    @Override
+    protected Object doGetTransaction() throws TransactionException {
+        return new ArrayList<DefaultTransactionStatus>();
+    }
 
-	@Override
-	protected void doCommit(DefaultTransactionStatus status) throws TransactionException {
-		@SuppressWarnings("unchecked")
-		List<DefaultTransactionStatus> list = 
-		      (List<DefaultTransactionStatus>) status.getTransaction();
+    /**
+     * We need to disable transaction synchronization so that the shared
+     * transaction synchronization state will not collide with each other. BUT,
+     * for LOB creators to use, we have to pay attention here:
+     * <ul>
+     * <li>if the LOB creator use standard preparedStatement methods, this
+     * transaction synchronization setting is OK;</li>
+     * <li>if the LOB creator don't use standard PS methods, you have to find
+     * other way to make sure the resources your LOB creator used should be
+     * cleaned up after the transaction.</li>
+     * </ul>
+     */
+    @Override
+    protected void doBegin(Object transactionObject, TransactionDefinition transactionDefinition) throws TransactionException {
+        @SuppressWarnings("unchecked") List<DefaultTransactionStatus> list = (List<DefaultTransactionStatus>) transactionObject;
+        for (PlatformTransactionManager transactionManager : transactionManagers) {
+            DefaultTransactionStatus element = (DefaultTransactionStatus) transactionManager.getTransaction(transactionDefinition);
+            list.add(element);
+        }
+    }
 
-		logger.info("prepare to commit transactions on multiple data sources.");
-		Validate.isTrue(list.size() <= this.getTransactionManagers().size());
+    @Override
+    protected void doCommit(DefaultTransactionStatus status) throws TransactionException {
+        @SuppressWarnings("unchecked") List<DefaultTransactionStatus> list = (List<DefaultTransactionStatus>) status.getTransaction();
 
-		TransactionException lastException = null;
-		for(int i=list.size()-1; i>=0;i--){
-			PlatformTransactionManager transactionManager=this.getTransactionManagers().get(i);
-			TransactionStatus localTransactionStatus=list.get(i);
-			
-			try{
-				transactionManager.commit(localTransactionStatus);
-			}
-			catch (TransactionException e) {
-				lastException=e;
-				logger.error("Error in commit", e);
+        logger.info("prepare to commit transactions on multiple data sources.");
+        Validate.isTrue(list.size() <= this.getTransactionManagers().size());
 
-			}
-		}
-		if (lastException != null) {
-			throw lastException;
-			// Rollback will ensue as long as rollbackOnCommitFailure=true
-		}
+        TransactionException lastException = null;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            PlatformTransactionManager transactionManager = this.getTransactionManagers().get(i);
+            TransactionStatus localTransactionStatus = list.get(i);
 
-	}
+            try {
+                transactionManager.commit(localTransactionStatus);
+            } catch (TransactionException e) {
+                lastException = e;
+                logger.error("Error in commit", e);
 
-	@Override
-	protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
-		@SuppressWarnings("unchecked")
-		List<DefaultTransactionStatus> list = 
-		     (List<DefaultTransactionStatus>) status.getTransaction();
+            }
+        }
+        if (lastException != null) {
+            throw lastException;
+            // Rollback will ensue as long as rollbackOnCommitFailure=true
+        }
 
-		logger.info("prepare to rollback transactions on multiple data sources.");
-		Validate.isTrue(list.size() <= this.getTransactionManagers().size());
+    }
 
-		TransactionException lastException = null;
-		for(int i=list.size()-1; i>=0; i--){
-			PlatformTransactionManager transactionManager=this.getTransactionManagers().get(i);
-			TransactionStatus localTransactionStatus=list.get(i);
-			
-			try {
-				transactionManager.rollback(localTransactionStatus);
-			} catch (TransactionException e) {
-				// Log exception and try to complete rollback
-				lastException = e;
-				logger.error("error occured when rolling back the transaction. \n{}",e);
-			}
-		}
-		
-		if (lastException != null) {
-			throw lastException;
-		}
-	}
+    @Override
+    protected void doRollback(DefaultTransactionStatus status) throws TransactionException {
+        @SuppressWarnings("unchecked") List<DefaultTransactionStatus> list = (List<DefaultTransactionStatus>) status.getTransaction();
 
-	public void setCobarDataSourceService(
-			ICobarDataSourceService cobarDataSourceService) {
-		this.cobarDataSourceService = cobarDataSourceService;
-	}
+        logger.info("prepare to rollback transactions on multiple data sources.");
+        Validate.isTrue(list.size() <= this.getTransactionManagers().size());
 
-	public ICobarDataSourceService getCobarDataSourceService() {
-		return cobarDataSourceService;
-	}
+        TransactionException lastException = null;
+        for (int i = list.size() - 1; i >= 0; i--) {
+            PlatformTransactionManager transactionManager = this.getTransactionManagers().get(i);
+            TransactionStatus localTransactionStatus = list.get(i);
 
-	public void afterPropertiesSet() throws Exception {
-		Validate.notNull(cobarDataSourceService);
-		for (DataSource dataSource : getCobarDataSourceService()
-				.getDataSources().values()) {
-			PlatformTransactionManager txManager = this.createTransactionManager(dataSource);
-			getTransactionManagers().add(txManager);
-		}
-		//Collections.reverse(getTransactionManagers());
-	}
+            try {
+                transactionManager.rollback(localTransactionStatus);
+            } catch (TransactionException e) {
+                // Log exception and try to complete rollback
+                lastException = e;
+                logger.error("error occured when rolling back the transaction. \n{}", e);
+            }
+        }
+
+        if (lastException != null) {
+            throw lastException;
+        }
+    }
+
+    public void setCobarDataSourceService(ICobarDataSourceService cobarDataSourceService) {
+        this.cobarDataSourceService = cobarDataSourceService;
+    }
+
+    public ICobarDataSourceService getCobarDataSourceService() {
+        return cobarDataSourceService;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        Validate.notNull(cobarDataSourceService);
+        for (DataSource dataSource : getCobarDataSourceService().getDataSources().values()) {
+            PlatformTransactionManager txManager = this.createTransactionManager(dataSource);
+            getTransactionManagers().add(txManager);
+        }
+        //Collections.reverse(getTransactionManagers());
+    }
 
 
-	protected PlatformTransactionManager createTransactionManager(DataSource dataSource){
-		return new DataSourceTransactionManager(dataSource);
-	}
+    protected PlatformTransactionManager createTransactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
 
 
-	public List<PlatformTransactionManager> getTransactionManagers() {
-		return transactionManagers;
-	}
+    public List<PlatformTransactionManager> getTransactionManagers() {
+        return transactionManagers;
+    }
 
 }

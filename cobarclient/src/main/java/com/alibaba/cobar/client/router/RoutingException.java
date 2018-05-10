@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router;
+package com.alibaba.cobar.client.router;
 
 import org.springframework.core.NestedRuntimeException;
 
 public class RoutingException extends NestedRuntimeException {
-	private static final long serialVersionUID = 8980219652872668164L;
 
-	public RoutingException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
-	
-	public RoutingException(String msg)
-	{
-		super(msg);
-	}
+    private static final long serialVersionUID = 8980219652872668164L;
+
+    public RoutingException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
+    public RoutingException(String msg) {
+        super(msg);
+    }
 
 }

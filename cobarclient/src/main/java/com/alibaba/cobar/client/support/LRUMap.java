@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support;
+package com.alibaba.cobar.client.support;
 
 import java.util.LinkedHashMap;
 
@@ -21,7 +21,7 @@ public class LRUMap<K, V> extends LinkedHashMap<K, V> {
 
     private static final long serialVersionUID = -3700466745992492679L;
 
-    private int               coreSize;
+    private int coreSize;
 
     public LRUMap(int coreSize) {
         super(coreSize + 1, 1.1f, true);

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.datasources;
+package com.alibaba.cobar.client.datasources;
 
 import javax.sql.DataSource;
 
@@ -21,7 +21,7 @@ import javax.sql.DataSource;
  * {@link CobarDataSourceDescriptor} describe a data base deployment structure
  * with 2 databases as HA group.<br>
  * it looks like:<br>
- * 
+ *
  * <pre>
  *                  Client
  *                    /\
@@ -42,15 +42,16 @@ import javax.sql.DataSource;
  * database independently, but if they are fetched from JNDI, we can't, so
  * explicitly declaring sibling data sources is necessary in this situation.</li>
  * </ol>
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public class CobarDataSourceDescriptor {
+
     /**
      * the identity of to-be-exposed DataSource.
      */
-    private String     identity;
+    private String identity;
     /**
      * active data source
      */
@@ -76,7 +77,7 @@ public class CobarDataSourceDescriptor {
      * attributes. In case you forget it, we set a default value with
      * "number of CPU" * 5.
      */
-    private int        poolSize = Runtime.getRuntime().availableProcessors() * 5;
+    private int poolSize = Runtime.getRuntime().availableProcessors() * 5;
 
     public String getIdentity() {
         return identity;
@@ -136,28 +137,32 @@ public class CobarDataSourceDescriptor {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         CobarDataSourceDescriptor other = (CobarDataSourceDescriptor) obj;
         if (identity == null) {
-            if (other.identity != null)
+            if (other.identity != null) {
                 return false;
-        } else if (!identity.equals(other.identity))
+            }
+        } else if (!identity.equals(other.identity)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "CobarDataSourceDescriptor [identity=" + identity + ", poolSize=" + poolSize
-                + ", standbyDataSource=" + standbyDataSource + ", standbyDetectorDataSource="
-                + standbyDetectorDataSource + ", targetDataSource=" + targetDataSource
-                + ", targetDetectorDataSource=" + targetDetectorDataSource + "]";
+        return "CobarDataSourceDescriptor [identity=" + identity + ", poolSize=" + poolSize + ", standbyDataSource=" + standbyDataSource
+            + ", standbyDetectorDataSource=" + standbyDetectorDataSource + ", targetDataSource=" + targetDataSource + ", targetDetectorDataSource="
+            + targetDetectorDataSource + "]";
     }
 
-    
+
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.datasources;
+package com.alibaba.cobar.client.datasources;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,14 +36,15 @@ import com.alibaba.cobar.client.support.utils.CollectionUtils;
 /**
  * StrongRefDataSourceLocator is mainly responsible for assembling data sources
  * mapping relationship as per data source definitions in spring container.
- * 
+ *
  * @author fujohnwang
  */
 public class DefaultCobarDataSourceService implements ICobarDataSourceService, InitializingBean {
-    private Set<CobarDataSourceDescriptor> dataSourceDescriptors   = new HashSet<CobarDataSourceDescriptor>();
+
+    private Set<CobarDataSourceDescriptor> dataSourceDescriptors = new HashSet<CobarDataSourceDescriptor>();
     private List<IDataSourcePostProcessor> dataSourcePostProcessor = new ArrayList<IDataSourcePostProcessor>();
-    private IHADataSourceCreator           haDataSourceCreator;
-    private Map<String, DataSource>        dataSources             = new HashMap<String, DataSource>();
+    private IHADataSourceCreator haDataSourceCreator;
+    private Map<String, DataSource> dataSources = new HashMap<String, DataSource>();
 
     public Map<String, DataSource> getDataSources() {
         return dataSources;
@@ -72,8 +73,7 @@ public class DefaultCobarDataSourceService implements ICobarDataSourceService, I
                 }
             }
 
-            dataSources.put(descriptor.getIdentity(), new LazyConnectionDataSourceProxy(
-                    dataSourceToUse));
+            dataSources.put(descriptor.getIdentity(), new LazyConnectionDataSourceProxy(dataSourceToUse));
         }
     }
 

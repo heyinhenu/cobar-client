@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.merger;
+package com.alibaba.cobar.client.merger;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,18 +34,16 @@ import com.alibaba.cobar.client.support.utils.CollectionUtils;
  * sub-result lists are all in order.<br>
  * In this situation, we only need to do the 2nd part of merge-sort algorithm to
  * sort all of the sub-result lists.<br>
- * 
+ *
  * @author fujohnwang
  * @since 1.0
- * @param <E>
  */
-public class ConcurrentSortMerger<E> implements IMerger<List<E>, List<E>>, InitializingBean,
-        DisposableBean {
+public class ConcurrentSortMerger<E> implements IMerger<List<E>, List<E>>, InitializingBean, DisposableBean {
 
-    private boolean         usingDefaultExecutor = false;
+    private boolean usingDefaultExecutor = false;
 
     private ExecutorService executor;
-    private Comparator<E>   comparator;
+    private Comparator<E> comparator;
 
     public List<E> merge(List<List<E>> entities) {
         List<E> resultList = new ArrayList<E>();
@@ -121,8 +119,7 @@ public class ConcurrentSortMerger<E> implements IMerger<List<E>, List<E>>, Initi
 
     public void afterPropertiesSet() throws Exception {
         if (getComparator() == null) {
-            throw new IllegalArgumentException(
-                    "you must provide a comparator for us to compare the element for merge.");
+            throw new IllegalArgumentException("you must provide a comparator for us to compare the element for merge.");
         }
         if (getExecutor() == null) {
             setExecutor(Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()));

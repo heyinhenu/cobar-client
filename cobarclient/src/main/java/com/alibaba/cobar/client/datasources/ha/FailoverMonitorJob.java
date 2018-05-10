@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.datasources.ha;
+package com.alibaba.cobar.client.datasources.ha;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -41,33 +41,33 @@ import org.springframework.aop.target.HotSwappableTargetSource;
  * data source can be switched out to be maintained.<br>
  * So we adapt the failover checking logic from current Cobar's HAPool with some
  * code structure adjustment.<br>
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public class FailoverMonitorJob implements Runnable {
 
-    private transient final Logger   logger   = LoggerFactory.getLogger(FailoverMonitorJob.class);
+    private transient final Logger logger = LoggerFactory.getLogger(FailoverMonitorJob.class);
 
-    private String                   detectingSQL;
+    private String detectingSQL;
     /**
      * time unit in milliseconds
      */
-    private long                     detectingRequestTimeout;
+    private long detectingRequestTimeout;
 
-    private long                     recheckInterval;
-    private int                      recheckTimes;
+    private long recheckInterval;
+    private int recheckTimes;
 
     private HotSwappableTargetSource hotSwapTargetSource;
-    private DataSource               masterDataSource;
-    private DataSource               standbyDataSource;
-    private DataSource               masterDetectorDataSource;
-    private DataSource               standbyDetectorDataSource;
+    private DataSource masterDataSource;
+    private DataSource standbyDataSource;
+    private DataSource masterDetectorDataSource;
+    private DataSource standbyDetectorDataSource;
 
     /**
      * first time it should be referenced to masterDetectorDataSource.
      */
-    private DataSource               currentDetectorDataSource;
+    private DataSource currentDetectorDataSource;
 
     /**
      * Since {@link FailoverMonitorJob} will be scheduled to run in sequence,
@@ -76,10 +76,9 @@ public class FailoverMonitorJob implements Runnable {
      * the execution exceeds given timeout threshold, we will check again before
      * switching to standby data source.
      */
-    private ExecutorService          executor;
-    
-    public FailoverMonitorJob(ExecutorService es)
-    {
+    private ExecutorService executor;
+
+    public FailoverMonitorJob(ExecutorService es) {
         Validate.notNull(es);
         this.executor = es;
     }
@@ -102,8 +101,7 @@ public class FailoverMonitorJob implements Runnable {
                         result = 0;
                         break;
                     } catch (Exception e) {
-                        logger.warn("(" + (i + 1) + ") check with failure. sleep ("
-                                + getRecheckInterval() + ") for next round check.");
+                        logger.warn("(" + (i + 1) + ") check with failure. sleep (" + getRecheckInterval() + ") for next round check.");
                         try {
                             TimeUnit.MILLISECONDS.sleep(getRecheckInterval());
                         } catch (InterruptedException e1) {
@@ -139,8 +137,8 @@ public class FailoverMonitorJob implements Runnable {
         }
     }
 
-    private  void doSwap() {
-        synchronized(hotSwapTargetSource){
+    private void doSwap() {
+        synchronized (hotSwapTargetSource) {
             DataSource target = (DataSource) getHotSwapTargetSource().getTarget();
             if (target == masterDataSource) {
                 getHotSwapTargetSource().swap(standbyDataSource);

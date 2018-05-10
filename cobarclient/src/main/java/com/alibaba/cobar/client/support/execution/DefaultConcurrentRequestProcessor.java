@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.execution;
+package com.alibaba.cobar.client.support.execution;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -42,10 +42,9 @@ import com.ibatis.sqlmap.client.SqlMapSession;
 
 public class DefaultConcurrentRequestProcessor implements IConcurrentRequestProcessor {
 
-    private transient final Logger logger = LoggerFactory
-                                                  .getLogger(DefaultConcurrentRequestProcessor.class);
+    private transient final Logger logger = LoggerFactory.getLogger(DefaultConcurrentRequestProcessor.class);
 
-    private SqlMapClient           sqlMapClient;
+    private SqlMapClient sqlMapClient;
 
     public DefaultConcurrentRequestProcessor() {
     }
@@ -57,8 +56,9 @@ public class DefaultConcurrentRequestProcessor implements IConcurrentRequestProc
     public List<Object> process(List<ConcurrentRequest> requests) {
         List<Object> resultList = new ArrayList<Object>();
 
-        if (CollectionUtils.isEmpty(requests))
+        if (CollectionUtils.isEmpty(requests)) {
             return resultList;
+        }
 
         List<RequestDepository> requestsDepo = fetchConnectionsAndDepositForLaterUse(requests);
         final CountDownLatch latch = new CountDownLatch(requestsDepo.size());
@@ -84,8 +84,7 @@ public class DefaultConcurrentRequestProcessor implements IConcurrentRequestProc
             try {
                 latch.await();
             } catch (InterruptedException e) {
-                throw new ConcurrencyFailureException(
-                        "interrupted when processing data access request in concurrency", e);
+                throw new ConcurrencyFailureException("interrupted when processing data access request in concurrency", e);
             }
 
         } finally {
@@ -122,30 +121,26 @@ public class DefaultConcurrentRequestProcessor implements IConcurrentRequestProc
             try {
                 return action.doInSqlMapClient(session);
             } catch (SQLException ex) {
-                throw new SQLErrorCodeSQLExceptionTranslator().translate("SqlMapClient operation",
-                        null, ex);
+                throw new SQLErrorCodeSQLExceptionTranslator().translate("SqlMapClient operation", null, ex);
             }
         } finally {
             session.close();
         }
     }
 
-    private void fillResultListWithFutureResults(List<Future<Object>> futures,
-                                                 List<Object> resultList) {
+    private void fillResultListWithFutureResults(List<Future<Object>> futures, List<Object> resultList) {
         for (Future<Object> future : futures) {
             try {
                 resultList.add(future.get());
             } catch (InterruptedException e) {
-                throw new ConcurrencyFailureException(
-                        "interrupted when processing data access request in concurrency", e);
+                throw new ConcurrencyFailureException("interrupted when processing data access request in concurrency", e);
             } catch (ExecutionException e) {
                 throw new ConcurrencyFailureException("something goes wrong in processing", e);
             }
         }
     }
 
-    private List<RequestDepository> fetchConnectionsAndDepositForLaterUse(
-                                                                          List<ConcurrentRequest> requests) {
+    private List<RequestDepository> fetchConnectionsAndDepositForLaterUse(List<ConcurrentRequest> requests) {
         List<RequestDepository> depos = new ArrayList<RequestDepository>();
         for (ConcurrentRequest request : requests) {
             DataSource dataSource = request.getDataSource();
@@ -153,8 +148,7 @@ public class DefaultConcurrentRequestProcessor implements IConcurrentRequestProc
             Connection springCon = null;
             boolean transactionAware = (dataSource instanceof TransactionAwareDataSourceProxy);
             try {
-                springCon = (transactionAware ? dataSource.getConnection() : DataSourceUtils
-                        .doGetConnection(dataSource));
+                springCon = (transactionAware ? dataSource.getConnection() : DataSourceUtils.doGetConnection(dataSource));
             } catch (SQLException ex) {
                 throw new CannotGetJdbcConnectionException("Could not get JDBC Connection", ex);
             }

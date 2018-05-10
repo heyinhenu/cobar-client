@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config.vo;
+package com.alibaba.cobar.client.router.config.vo;
 
 public class InternalRule {
 
@@ -61,7 +61,7 @@ public class InternalRule {
 
     /**
      * set the bean name of merger to use.
-     * 
+     *
      * @param merger, the bean name in the container.
      */
     public void setMerger(String merger) {
@@ -80,8 +80,7 @@ public class InternalRule {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
-        result = prime * result
-                + ((shardingExpression == null) ? 0 : shardingExpression.hashCode());
+        result = prime * result + ((shardingExpression == null) ? 0 : shardingExpression.hashCode());
         result = prime * result + ((shards == null) ? 0 : shards.hashCode());
         result = prime * result + ((sqlmap == null) ? 0 : sqlmap.hashCode());
         return result;
@@ -89,39 +88,50 @@ public class InternalRule {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         InternalRule other = (InternalRule) obj;
         if (namespace == null) {
-            if (other.namespace != null)
+            if (other.namespace != null) {
                 return false;
-        } else if (!namespace.equals(other.namespace))
+            }
+        } else if (!namespace.equals(other.namespace)) {
             return false;
+        }
         if (shardingExpression == null) {
-            if (other.shardingExpression != null)
+            if (other.shardingExpression != null) {
                 return false;
-        } else if (!shardingExpression.equals(other.shardingExpression))
+            }
+        } else if (!shardingExpression.equals(other.shardingExpression)) {
             return false;
+        }
         if (shards == null) {
-            if (other.shards != null)
+            if (other.shards != null) {
                 return false;
-        } else if (!shards.equals(other.shards))
+            }
+        } else if (!shards.equals(other.shards)) {
             return false;
+        }
         if (sqlmap == null) {
-            if (other.sqlmap != null)
+            if (other.sqlmap != null) {
                 return false;
-        } else if (!sqlmap.equals(other.sqlmap))
+            }
+        } else if (!sqlmap.equals(other.sqlmap)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "InternalRule [namespace=" + namespace + ", shardingExpression="
-                + shardingExpression + ", shards=" + shards + ", sqlmap=" + sqlmap + "]";
+        return "InternalRule [namespace=" + namespace + ", shardingExpression=" + shardingExpression + ", shards=" + shards + ", sqlmap=" + sqlmap
+            + "]";
     }
 }

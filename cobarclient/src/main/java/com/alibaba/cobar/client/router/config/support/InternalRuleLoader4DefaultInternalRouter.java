@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config.support;
+package com.alibaba.cobar.client.router.config.support;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,9 +37,7 @@ import com.alibaba.cobar.client.support.utils.MapUtils;
 
 public class InternalRuleLoader4DefaultInternalRouter {
 
-    public void loadRulesAndEquipRouter(List<InternalRule> rules,
-                                        DefaultCobarClientInternalRouter router,
-                                        Map<String, Object> functionsMap) {
+    public void loadRulesAndEquipRouter(List<InternalRule> rules, DefaultCobarClientInternalRouter router, Map<String, Object> functionsMap) {
         if (CollectionUtils.isEmpty(rules)) {
             return;
         }
@@ -53,24 +51,20 @@ public class InternalRuleLoader4DefaultInternalRouter {
             Validate.notEmpty(destinations, "destination shards must be given explicitly.");
 
             if (StringUtils.isEmpty(namespace) && StringUtils.isEmpty(sqlAction)) {
-                throw new IllegalArgumentException(
-                        "at least one of 'namespace' or 'sqlAction' must be given.");
+                throw new IllegalArgumentException("at least one of 'namespace' or 'sqlAction' must be given.");
             }
             if (StringUtils.isNotEmpty(namespace) && StringUtils.isNotEmpty(sqlAction)) {
-                throw new IllegalArgumentException(
-                        "'namespace' and 'sqlAction' are alternatives, can't guess which one to use if both of them are provided.");
+                throw new IllegalArgumentException("'namespace' and 'sqlAction' are alternatives, can't guess which one to use if both of them are provided.");
             }
 
             if (StringUtils.isNotEmpty(namespace)) {
-                List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = setUpRuleSequenceContainerIfNecessary(
-                        router, namespace);
+                List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = setUpRuleSequenceContainerIfNecessary(router, namespace);
 
                 if (StringUtils.isEmpty(shardingExpression)) {
 
                     ruleSequence.get(3).add(new IBatisNamespaceRule(namespace, destinations));
                 } else {
-                    IBatisNamespaceShardingRule insr = new IBatisNamespaceShardingRule(namespace,
-                            destinations, shardingExpression);
+                    IBatisNamespaceShardingRule insr = new IBatisNamespaceShardingRule(namespace, destinations, shardingExpression);
                     if (MapUtils.isNotEmpty(functionsMap)) {
                         insr.setFunctionMap(functionsMap);
                     }
@@ -78,14 +72,13 @@ public class InternalRuleLoader4DefaultInternalRouter {
                 }
             }
             if (StringUtils.isNotEmpty(sqlAction)) {
-                List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = setUpRuleSequenceContainerIfNecessary(
-                        router, StringUtils.substringBeforeLast(sqlAction, "."));
+                List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = setUpRuleSequenceContainerIfNecessary(router, StringUtils
+                    .substringBeforeLast(sqlAction, "."));
 
                 if (StringUtils.isEmpty(shardingExpression)) {
                     ruleSequence.get(1).add(new IBatisSqlActionRule(sqlAction, destinations));
                 } else {
-                    IBatisSqlActionShardingRule issr = new IBatisSqlActionShardingRule(sqlAction,
-                            destinations, shardingExpression);
+                    IBatisSqlActionShardingRule issr = new IBatisSqlActionShardingRule(sqlAction, destinations, shardingExpression);
                     if (MapUtils.isNotEmpty(functionsMap)) {
                         issr.setFunctionMap(functionsMap);
                     }
@@ -96,10 +89,8 @@ public class InternalRuleLoader4DefaultInternalRouter {
     }
 
     private List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> setUpRuleSequenceContainerIfNecessary(
-                                                                                                           DefaultCobarClientInternalRouter routerToUse,
-                                                                                                           String namespace) {
-        List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = routerToUse
-                .getRulesGroupByNamespaces().get(namespace);
+        DefaultCobarClientInternalRouter routerToUse, String namespace) {
+        List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequence = routerToUse.getRulesGroupByNamespaces().get(namespace);
         if (CollectionUtils.isEmpty(ruleSequence)) {
             ruleSequence = new ArrayList<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>();
             Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionShardingRules = new HashSet<IRoutingRule<IBatisRoutingFact, List<String>>>();

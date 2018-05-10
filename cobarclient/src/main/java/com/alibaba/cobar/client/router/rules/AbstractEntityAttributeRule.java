@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules;
+package com.alibaba.cobar.client.router.rules;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 
 /**
  * horizontal partitioning oriented rule that matches against entity/table type and attribute values.<br>
- * 
- * @author fujohnwang
  *
- * @param <F>
- * @param <T>
+ * @author fujohnwang
  */
 public abstract class AbstractEntityAttributeRule<F, T> extends AbstractEntityTypeRule<F, T> {
+
     private String attributePattern;
-    
-    public AbstractEntityAttributeRule(String typePattern, String action)
-    {
+
+    public AbstractEntityAttributeRule(String typePattern, String action) {
         super(typePattern, action);
     }
-    
-    public AbstractEntityAttributeRule(String typePattern, String action, String attributePattern)
-    {
+
+    public AbstractEntityAttributeRule(String typePattern, String action, String attributePattern) {
         super(typePattern, action);
         Validate.notEmpty(StringUtils.trimToEmpty(attributePattern));
-        
+
         this.attributePattern = attributePattern;
     }
 
@@ -61,19 +57,24 @@ public abstract class AbstractEntityAttributeRule<F, T> extends AbstractEntityTy
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         AbstractEntityAttributeRule other = (AbstractEntityAttributeRule) obj;
         if (attributePattern == null) {
-            if (other.attributePattern != null)
+            if (other.attributePattern != null) {
                 return false;
-        } else if (!attributePattern.equals(other.attributePattern))
+            }
+        } else if (!attributePattern.equals(other.attributePattern)) {
             return false;
+        }
         return true;
     }
-    
+
 }

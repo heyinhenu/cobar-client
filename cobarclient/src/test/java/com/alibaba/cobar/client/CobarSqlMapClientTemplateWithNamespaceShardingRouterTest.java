@@ -22,17 +22,15 @@ import com.alibaba.cobar.client.entities.Follower;
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
 import com.alibaba.cobar.client.support.vo.BatchInsertTask;
 
-@Test(sequential=true)
-public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
-        AbstractTestNGCobarClientTest {
+@Test(sequential = true)
+public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends AbstractTestNGCobarClientTest {
 
-    private String                 insertSQLAction      = "com.alibaba.cobar.client.entities.Follower.create";
-    private String                 batchInsertSQLAction = "com.alibaba.cobar.client.entities.Follower.batchInsert";
+    private String insertSQLAction = "com.alibaba.cobar.client.entities.Follower.create";
+    private String batchInsertSQLAction = "com.alibaba.cobar.client.entities.Follower.batchInsert";
 
     public CobarSqlMapClientTemplateWithNamespaceShardingRouterTest() {
-        super(new String[] { "META-INF/spring/cobar-client-appctx.xml",
-                "META-INF/spring/datasources-appctx.xml",
-                "META-INF/spring/namespace-sharding-router-appctx.xml" });
+        super(new String[]{"META-INF/spring/cobar-client-appctx.xml", "META-INF/spring/datasources-appctx.xml",
+            "META-INF/spring/namespace-sharding-router-appctx.xml"});
     }
 
     public void testInsertOnCobarSqlMapClientTemplateWithSingleEntityNormally() {
@@ -59,7 +57,7 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
     }
 
     public void testInsertOnCobarSqlMapClientTemplateWithMultipleEntities() {
-        String[] names = { "Aaron", "Amily", "Aragon", "Darren", "Darwin" };
+        String[] names = {"Aaron", "Amily", "Aragon", "Darren", "Darwin"};
 
         List<Follower> followers = new ArrayList<Follower>();
         for (String name : names) {
@@ -136,8 +134,7 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
         verifyEntityNonExistenceOnSpecificDataSource(confirmSQL, jt2s);
 
         try {
-            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName",
-                    f, 2);
+            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName", f, 2);
             fail("only one row will be affected in fact.");
         } catch (DataAccessException e) {
             assertTrue(e instanceof JdbcUpdateAffectedIncorrectNumberOfRowsException);
@@ -151,16 +148,14 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
         verifyEntityNonExistenceOnSpecificDataSource(confirmSQL, jt2s);
 
         try {
-            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName",
-                    f, 0);
+            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName", f, 0);
         } catch (DataAccessException e) {
             fail();
         }
 
         f = new Follower("Amanda");
         try {
-            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName",
-                    f, 0);
+            getSqlMapClientTemplate().delete("com.alibaba.cobar.client.entities.Follower.deleteByName", f, 0);
         } catch (DataAccessException e) {
             fail();
         }
@@ -168,13 +163,12 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
 
     public void testQueryForListOnCobarSqlMapClientTemplate() {
         // 1. initialize data
-        String[] names = { "Aaron", "Amily", "Aragon", "Darren", "Darwin" };
+        String[] names = {"Aaron", "Amily", "Aragon", "Darren", "Darwin"};
         batchInsertMultipleFollowersAsFixture(names);
 
         // 2. perform assertion
-        @SuppressWarnings("unchecked")
-        List<Follower> resultList = (List<Follower>) getSqlMapClientTemplate().queryForList(
-                "com.alibaba.cobar.client.entities.Follower.findAll");
+        @SuppressWarnings("unchecked") List<Follower> resultList = (List<Follower>) getSqlMapClientTemplate()
+            .queryForList("com.alibaba.cobar.client.entities.Follower.findAll");
         assertTrue(CollectionUtils.isNotEmpty(resultList));
         assertEquals(3, resultList.size()); // no rule match 'findAll', so query is performed against default data source - partition1
         for (Follower f : resultList) {
@@ -182,18 +176,16 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
         }
 
         // 3. perform assertion with another different query
-        @SuppressWarnings("unchecked")
-        List<Follower> followersWithNameStartsWithA = (List<Follower>) getSqlMapClientTemplate()
-                .queryForList("com.alibaba.cobar.client.entities.Follower.finaByNameAlike", "A");
+        @SuppressWarnings("unchecked") List<Follower> followersWithNameStartsWithA = (List<Follower>) getSqlMapClientTemplate()
+            .queryForList("com.alibaba.cobar.client.entities.Follower.finaByNameAlike", "A");
         assertTrue(CollectionUtils.isNotEmpty(followersWithNameStartsWithA));
         assertEquals(3, followersWithNameStartsWithA.size());
         for (Follower f : followersWithNameStartsWithA) {
             assertTrue(ArrayUtils.contains(names, f.getName()));
         }
 
-        @SuppressWarnings("unchecked")
-        List<Follower> followersWithNameStartsWithD = (List<Follower>) getSqlMapClientTemplate()
-                .queryForList("com.alibaba.cobar.client.entities.Follower.finaByNameAlike", "D");
+        @SuppressWarnings("unchecked") List<Follower> followersWithNameStartsWithD = (List<Follower>) getSqlMapClientTemplate()
+            .queryForList("com.alibaba.cobar.client.entities.Follower.finaByNameAlike", "D");
         assertTrue(CollectionUtils.isEmpty(followersWithNameStartsWithD));
     }
 
@@ -203,13 +195,12 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
      */
     public void testQueryForObjectOnCobarSqlMapClientTemplate() {
         // 1. initialize data
-        String[] names = { "Aaron", "Amily", "Aragon", "Darren", "Darwin" };
+        String[] names = {"Aaron", "Amily", "Aragon", "Darren", "Darwin"};
         batchInsertMultipleFollowersAsFixture(names);
 
         // 2. assertion.
         for (String name : names) {
-            Follower follower = (Follower) getSqlMapClientTemplate().queryForObject(
-                    "com.alibaba.cobar.client.entities.Follower.finaByName", name);
+            Follower follower = (Follower) getSqlMapClientTemplate().queryForObject("com.alibaba.cobar.client.entities.Follower.finaByName", name);
             if (name.startsWith("A")) {
                 assertNotNull(follower);
             } else {
@@ -217,6 +208,7 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
             }
         }
     }
+
     /**
      * WARNING: don't do stupid things such like below, we do this because we
      * can guarantee the shard id will NOT change. if you want to use cobar
@@ -224,28 +216,25 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
      * id that will not be changed once it's created!!!
      */
     public void testUpdateOnCobarSqlMapClientTemplate() {
-        String[] names = { "Aaron", "Amily", "Aragon", "Darren", "Darwin" };
+        String[] names = {"Aaron", "Amily", "Aragon", "Darren", "Darwin"};
         batchInsertMultipleFollowersAsFixture(names);
 
         String nameSuffix = "Wang";
         for (String name : names) {
             if (name.startsWith("A")) {
-                Follower follower = (Follower) getSqlMapClientTemplate().queryForObject(
-                        "com.alibaba.cobar.client.entities.Follower.finaByName", name);
+                Follower follower = (Follower) getSqlMapClientTemplate()
+                    .queryForObject("com.alibaba.cobar.client.entities.Follower.finaByName", name);
                 assertNotNull(follower);
                 follower.setName(follower.getName() + nameSuffix);
-                getSqlMapClientTemplate().update(
-                        "com.alibaba.cobar.client.entities.Follower.update", follower);
+                getSqlMapClientTemplate().update("com.alibaba.cobar.client.entities.Follower.update", follower);
 
                 Long id = follower.getId();
 
                 follower = null;
-                follower = (Follower) getSqlMapClientTemplate().queryForObject(
-                        "com.alibaba.cobar.client.entities.Follower.finaByName", name);
+                follower = (Follower) getSqlMapClientTemplate().queryForObject("com.alibaba.cobar.client.entities.Follower.finaByName", name);
                 assertNull(follower);
 
-                follower = (Follower) getSqlMapClientTemplate().queryForObject(
-                        "com.alibaba.cobar.client.entities.Follower.load", id);
+                follower = (Follower) getSqlMapClientTemplate().queryForObject("com.alibaba.cobar.client.entities.Follower.load", id);
                 assertNotNull(follower);
                 assertEquals(name + nameSuffix, follower.getName());
             } else {
@@ -258,26 +247,22 @@ public class CobarSqlMapClientTemplateWithNamespaceShardingRouterTest extends
                         return f;
                     }
                 };
-                Follower follower = (Follower) jt2m.queryForObject(sql, new Object[] { name },
-                        rowMapper);
+                Follower follower = (Follower) jt2m.queryForObject(sql, new Object[]{name}, rowMapper);
                 assertNotNull(follower);
                 follower.setName(follower.getName() + nameSuffix);
-                getSqlMapClientTemplate().update(
-                        "com.alibaba.cobar.client.entities.Follower.update", follower);
+                getSqlMapClientTemplate().update("com.alibaba.cobar.client.entities.Follower.update", follower);
 
                 Long id = follower.getId();
 
                 follower = null;
                 try {
-                    follower = (Follower) jt2m
-                            .queryForObject(sql, new Object[] { name }, rowMapper);
+                    follower = (Follower) jt2m.queryForObject(sql, new Object[]{name}, rowMapper);
                     fail();
                 } catch (DataAccessException e) {
                     assertTrue(e instanceof EmptyResultDataAccessException);
                 }
 
-                follower = (Follower) jt2m.queryForObject("select * from followers where id=?",
-                        new Object[] { id }, rowMapper);
+                follower = (Follower) jt2m.queryForObject("select * from followers where id=?", new Object[]{id}, rowMapper);
                 assertNotNull(follower);
                 assertEquals(name + nameSuffix, follower.getName());
             }

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.merger;
+package com.alibaba.cobar.client.merger;
 
 import java.util.List;
 
 public interface IMerger<T, R> {
+
     R merge(List<T> entities);
 }

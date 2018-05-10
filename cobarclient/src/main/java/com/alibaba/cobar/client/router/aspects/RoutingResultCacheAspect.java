@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.aspects;
+package com.alibaba.cobar.client.router.aspects;
 
 import java.util.Arrays;
 
@@ -29,13 +29,13 @@ import com.alibaba.cobar.client.support.LRUMap;
 /**
  * An advice that will provide cache service for {@link ICobarRouter} to improve
  * the routing performance if necessary.<br>
- * 
+ *
  * @author fujohnwang
- * @since 1.0
  * @see {@link ICobarRouter}
  * @see {@link AbstractCobarClientInternalRouterFactoryBean}
  * @see {@link DefaultCobarClientInternalRouter}
  * @see {@link StaticCobarClientInternalRouterFactoryBean}
+ * @since 1.0
  */
 public class RoutingResultCacheAspect implements MethodInterceptor {
 
@@ -44,8 +44,7 @@ public class RoutingResultCacheAspect implements MethodInterceptor {
     public Object invoke(MethodInvocation invocation) throws Throwable {
         Object[] args = invocation.getArguments();
         if (args.length != 1) {
-            throw new IllegalArgumentException("unexpected argument status on method:"
-                    + invocation.getMethod() + ", args:" + Arrays.toString(args));
+            throw new IllegalArgumentException("unexpected argument status on method:" + invocation.getMethod() + ", args:" + Arrays.toString(args));
         }
 
         synchronized (internalCache) {

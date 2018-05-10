@@ -23,33 +23,31 @@ import com.alibaba.cobar.client.entities.Follower;
 import com.alibaba.cobar.client.support.vo.BatchInsertTask;
 
 public abstract class AbstractTestNGCobarClientTest {
-    
-    private transient final Logger logger = LoggerFactory
-            .getLogger(AbstractTestNGCobarClientTest.class);
-    
-    public static final String   CREATE_TABLE_COBAR_HA    = "CREATE TABLE IF NOT EXISTS cobarha(timeflag TIMESTAMP)";
-    public static final String   CREATE_TABLE_TWEETS      = "CREATE TABLE IF NOT EXISTS tweets(id BIGINT IDENTITY PRIMARY KEY, tweet VARCHAR(140))";
-    public static final String   CREATE_TABLE_FOLLOWERS   = "CREATE TABLE IF NOT EXISTS followers(id BIGINT IDENTITY PRIMARY KEY,name VARCHAR(255))";
-    public static final String   CREATE_TABLE_OFFERS      = "CREATE TABLE IF NOT EXISTS offers(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, memberId VARCHAR(32), subject  VARCHAR(512), gmtUpdated TIMESTAMP default CURRENT_TIMESTAMP())";
 
-    public static final String   TRUNCATE_TABLE_COBARHA   = "TRUNCATE TABLE cobarha";
-    public static final String   TRUNCATE_TABLE_TWEETS    = "TRUNCATE TABLE tweets";
-    public static final String   TRUNCATE_TABLE_FOLLOWERS = "TRUNCATE TABLE followers";
-    public static final String   TRUNCATE_TABLE_OFFERS    = "TRUNCATE TABLE offers";
+    private transient final Logger logger = LoggerFactory.getLogger(AbstractTestNGCobarClientTest.class);
 
-    private ApplicationContext   applicationContext;
+    public static final String CREATE_TABLE_COBAR_HA = "CREATE TABLE IF NOT EXISTS cobarha(timeflag TIMESTAMP)";
+    public static final String CREATE_TABLE_TWEETS = "CREATE TABLE IF NOT EXISTS tweets(id BIGINT IDENTITY PRIMARY KEY, tweet VARCHAR(140))";
+    public static final String CREATE_TABLE_FOLLOWERS = "CREATE TABLE IF NOT EXISTS followers(id BIGINT IDENTITY PRIMARY KEY,name VARCHAR(255))";
+    public static final String CREATE_TABLE_OFFERS = "CREATE TABLE IF NOT EXISTS offers(id BIGINT(20) AUTO_INCREMENT PRIMARY KEY, memberId VARCHAR(32), subject  VARCHAR(512), gmtUpdated TIMESTAMP default CURRENT_TIMESTAMP())";
+
+    public static final String TRUNCATE_TABLE_COBARHA = "TRUNCATE TABLE cobarha";
+    public static final String TRUNCATE_TABLE_TWEETS = "TRUNCATE TABLE tweets";
+    public static final String TRUNCATE_TABLE_FOLLOWERS = "TRUNCATE TABLE followers";
+    public static final String TRUNCATE_TABLE_OFFERS = "TRUNCATE TABLE offers";
+
+    private ApplicationContext applicationContext;
     private SqlMapClientTemplate sqlMapClientTemplate;
-    protected JdbcTemplate       jt1m;
-    protected JdbcTemplate       jt1s;
-    protected JdbcTemplate       jt2m;
-    protected JdbcTemplate       jt2s;
+    protected JdbcTemplate jt1m;
+    protected JdbcTemplate jt1s;
+    protected JdbcTemplate jt2m;
+    protected JdbcTemplate jt2s;
 
     public AbstractTestNGCobarClientTest(String[] locations) {
         applicationContext = new ClassPathXmlApplicationContext(locations);
         ((AbstractApplicationContext) applicationContext).registerShutdownHook();
 
-        setSqlMapClientTemplate((SqlMapClientTemplate) applicationContext
-                .getBean("sqlMapClientTemplate"));
+        setSqlMapClientTemplate((SqlMapClientTemplate) applicationContext.getBean("sqlMapClientTemplate"));
 
         jt1m = new JdbcTemplate((DataSource) applicationContext.getBean("partition1_main"));
         jt1s = new JdbcTemplate((DataSource) applicationContext.getBean("partition1_standby"));
@@ -103,7 +101,7 @@ public abstract class AbstractTestNGCobarClientTest {
     @AfterClass
     public void cleanup() {
         if (applicationContext != null) {
-            logger.info("shut down Application Context to clean up.");            
+            logger.info("shut down Application Context to clean up.");
             ((AbstractApplicationContext) applicationContext).destroy();
         }
     }
@@ -115,12 +113,10 @@ public abstract class AbstractTestNGCobarClientTest {
         }
 
         BatchInsertTask task = new BatchInsertTask(followers);
-        getSqlMapClientTemplate().insert("com.alibaba.cobar.client.entities.Follower.batchInsert",
-                task);
+        getSqlMapClientTemplate().insert("com.alibaba.cobar.client.entities.Follower.batchInsert", task);
     }
 
-    protected void batchInsertMultipleFollowersAsFixtureWithJdbcTemplate(String[] names,
-                                                                         JdbcTemplate jt) {
+    protected void batchInsertMultipleFollowersAsFixtureWithJdbcTemplate(String[] names, JdbcTemplate jt) {
         for (String name : names) {
             String sql = "insert into followers(name) values('" + name + "')";
             jt.update(sql);

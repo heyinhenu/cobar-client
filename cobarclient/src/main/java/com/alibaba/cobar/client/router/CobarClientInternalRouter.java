@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router;
+package com.alibaba.cobar.client.router;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,16 +52,16 @@ import com.alibaba.cobar.client.support.utils.CollectionUtils;
  * To enhance the rule matching performance, we add a LRU cache, you can decide
  * whether to use this cache by set the {@link #enableCache} property's value to
  * true or false.<br>
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public class CobarClientInternalRouter implements ICobarRouter<IBatisRoutingFact> {
 
-    private transient final Logger logger      = LoggerFactory.getLogger(CobarClientInternalRouter.class);
+    private transient final Logger logger = LoggerFactory.getLogger(CobarClientInternalRouter.class);
 
-    private LRUMap                 localCache;
-    private boolean                enableCache = false;
+    private LRUMap localCache;
+    private boolean enableCache = false;
 
     public CobarClientInternalRouter(boolean enableCache) {
         this(enableCache, 10000);
@@ -78,7 +78,7 @@ public class CobarClientInternalRouter implements ICobarRouter<IBatisRoutingFact
         }
     }
 
-    private List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequences          = new ArrayList<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>();
+    private List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequences = new ArrayList<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>();
 
     public RoutingResult doRoute(IBatisRoutingFact routingFact) throws RoutingException {
         if (enableCache) {
@@ -120,9 +120,8 @@ public class CobarClientInternalRouter implements ICobarRouter<IBatisRoutingFact
         return result;
     }
 
-    private IRoutingRule<IBatisRoutingFact, List<String>> searchMatchedRuleAgainst(
-                                                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> rules,
-                                                                                   IBatisRoutingFact routingFact) {
+    private IRoutingRule<IBatisRoutingFact, List<String>> searchMatchedRuleAgainst(Set<IRoutingRule<IBatisRoutingFact, List<String>>> rules,
+        IBatisRoutingFact routingFact) {
         if (CollectionUtils.isEmpty(rules)) {
             return null;
         }
@@ -138,10 +137,10 @@ public class CobarClientInternalRouter implements ICobarRouter<IBatisRoutingFact
         return localCache;
     }
 
-    public synchronized void clearLocalCache(){
+    public synchronized void clearLocalCache() {
         this.localCache.clear();
     }
-    
+
     public boolean isEnableCache() {
         return enableCache;
     }

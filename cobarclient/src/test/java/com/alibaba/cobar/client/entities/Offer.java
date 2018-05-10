@@ -3,10 +3,11 @@ package com.alibaba.cobar.client.entities;
 import java.util.Date;
 
 public class Offer {
-    private Long   id;
+
+    private Long id;
     private Long memberId;
     private String subject;
-    private Date   gmtUpdated = new Date();
+    private Date gmtUpdated = new Date();
 
     public Long getId() {
         return id;
@@ -53,40 +54,50 @@ public class Offer {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Offer other = (Offer) obj;
         if (gmtUpdated == null) {
-            if (other.gmtUpdated != null)
+            if (other.gmtUpdated != null) {
                 return false;
-        } else if (!gmtUpdated.equals(other.gmtUpdated))
+            }
+        } else if (!gmtUpdated.equals(other.gmtUpdated)) {
             return false;
+        }
         if (id == null) {
-            if (other.id != null)
+            if (other.id != null) {
                 return false;
-        } else if (!id.equals(other.id))
+            }
+        } else if (!id.equals(other.id)) {
             return false;
+        }
         if (memberId == null) {
-            if (other.memberId != null)
+            if (other.memberId != null) {
                 return false;
-        } else if (!memberId.equals(other.memberId))
+            }
+        } else if (!memberId.equals(other.memberId)) {
             return false;
+        }
         if (subject == null) {
-            if (other.subject != null)
+            if (other.subject != null) {
                 return false;
-        } else if (!subject.equals(other.subject))
+            }
+        } else if (!subject.equals(other.subject)) {
             return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "Offer [gmtUpdated=" + gmtUpdated + ", id=" + id + ", memberId=" + memberId
-                + ", subject=" + subject + "]";
+        return "Offer [gmtUpdated=" + gmtUpdated + ", id=" + id + ", memberId=" + memberId + ", subject=" + subject + "]";
     }
 
 }

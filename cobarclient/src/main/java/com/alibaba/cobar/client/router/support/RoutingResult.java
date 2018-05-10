@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.support;
+package com.alibaba.cobar.client.router.support;
 
 import java.util.List;
 
@@ -24,7 +24,8 @@ import com.alibaba.cobar.client.merger.IMerger;
  * @since 1.0
  */
 public class RoutingResult {
-    private List<String>  resourceIdentities;
+
+    private List<String> resourceIdentities;
     private IMerger<?, ?> merger;
 
     public List<String> getResourceIdentities() {

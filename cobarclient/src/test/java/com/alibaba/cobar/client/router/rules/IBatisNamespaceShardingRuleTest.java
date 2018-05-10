@@ -20,20 +20,21 @@ import com.alibaba.cobar.client.router.rules.ibatis.IBatisNamespaceShardingRule;
 import com.alibaba.cobar.client.router.rules.support.ModFunction;
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
+
 @Test
 public class IBatisNamespaceShardingRuleTest {
 
-    public static final String          DEFAULT_TYPE_PATTEN      = "com.alibaba.cobar.client.entity.Tweet";
-    public static final String          DEFAULT_SHARDING_PATTERN = "id>=10000 and id < 20000";
-    public static final String[]        DEFAULT_SHARDS           = { "shard1", "shard2" };
+    public static final String DEFAULT_TYPE_PATTEN = "com.alibaba.cobar.client.entity.Tweet";
+    public static final String DEFAULT_SHARDING_PATTERN = "id>=10000 and id < 20000";
+    public static final String[] DEFAULT_SHARDS = {"shard1", "shard2"};
 
     private IBatisNamespaceShardingRule rule;
 
     @BeforeMethod
     protected void setUp() throws Exception {
-        rule = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard1,shard2",
-                DEFAULT_SHARDING_PATTERN);
+        rule = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard1,shard2", DEFAULT_SHARDING_PATTERN);
     }
+
     @AfterMethod
     protected void tearDown() throws Exception {
         rule = null;
@@ -72,8 +73,7 @@ public class IBatisNamespaceShardingRuleTest {
         assertEquals(1, shards.size());
         assertEquals("shard1,shard2", shards.get(0));
 
-        rule = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard1;shard2",
-                DEFAULT_SHARDING_PATTERN);
+        rule = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard1;shard2", DEFAULT_SHARDING_PATTERN);
         rule.setActionPatternSeparator(";");
         shards = null;
         shards = rule.action();
@@ -97,8 +97,7 @@ public class IBatisNamespaceShardingRuleTest {
         Tweet t = new Tweet();
         t.setId(15000L);
         t.setTweet("anything");
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", t);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", t);
         assertTrue(rule.isDefinedAt(fact));
 
         fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.update", t);
@@ -136,8 +135,7 @@ public class IBatisNamespaceShardingRuleTest {
         Tweet t = new Tweet();
         t.setId(15000L);
         t.setTweet("anything");
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.update", t);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.update", t);
         assertTrue(rule.isDefinedAt(fact));
 
         t.setId(20000001L);
@@ -174,8 +172,8 @@ public class IBatisNamespaceShardingRuleTest {
 
     public void testRuleShardingPatternWithCustomFunctions() throws Exception {
         String shardingExpression = "mod.apply(id)==3";
-        IBatisNamespaceShardingRule r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN,
-                StringUtils.join(DEFAULT_SHARDS, ","), shardingExpression);
+        IBatisNamespaceShardingRule r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, StringUtils
+            .join(DEFAULT_SHARDS, ","), shardingExpression);
         Map<String, Object> functions = new HashMap<String, Object>();
         functions.put("mod", new ModFunction(18L));
         r.setFunctionMap(functions);
@@ -183,26 +181,20 @@ public class IBatisNamespaceShardingRuleTest {
         Tweet t = new Tweet();
         t.setId(3L);
         t.setTweet("anything");
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", t);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", t);
         assertTrue(r.isDefinedAt(fact));
     }
-    
-    public void testRuleExpressionEvaluationWithSimpleTypeRoutingFact()
-    {
-        IBatisNamespaceShardingRule r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN,
-                "shard2", "$ROOT.startsWith(\"A\")");
-        
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", "Arron");
+
+    public void testRuleExpressionEvaluationWithSimpleTypeRoutingFact() {
+        IBatisNamespaceShardingRule r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard2", "$ROOT.startsWith(\"A\")");
+
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", "Arron");
         assertTrue(r.isDefinedAt(fact));
-        
-        r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN,
-                "shard2", "startsWith(\"A\")");
+
+        r = new IBatisNamespaceShardingRule(DEFAULT_TYPE_PATTEN, "shard2", "startsWith(\"A\")");
         assertTrue(r.isDefinedAt(fact));
-        
-        fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", "Donald");
+
+        fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", "Donald");
         assertFalse(r.isDefinedAt(fact));
     }
 }

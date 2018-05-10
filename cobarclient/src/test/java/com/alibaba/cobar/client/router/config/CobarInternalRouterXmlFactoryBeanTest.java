@@ -27,6 +27,7 @@ import com.alibaba.cobar.client.support.utils.MapUtils;
 
 @Test
 public class CobarInternalRouterXmlFactoryBeanTest {
+
     CobarInteralRouterXmlFactoryBean factory;
 
     @BeforeMethod
@@ -40,8 +41,7 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     }
 
     public void testAssemblingRulesNormally() throws Exception {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"));
         factory.afterPropertiesSet();
         CobarClientInternalRouter router = (CobarClientInternalRouter) factory.getObject();
         List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> rules = router.getRuleSequences();
@@ -50,8 +50,7 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     }
 
     public void testAssemblingRulesWithoutConfiguringShards() {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/abnormal_rule_fixture1.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/abnormal_rule_fixture1.xml"));
         try {
             factory.afterPropertiesSet();
             fail();
@@ -62,35 +61,29 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     }
 
     public void testAssemblingRulesWithoutConfiguringNamspaceOrSqlmap() {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/abnormal_rule_fixture2.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/abnormal_rule_fixture2.xml"));
         try {
             factory.afterPropertiesSet();
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals("at least one of 'namespace' or 'sqlAction' must be given.", e
-                    .getMessage());
+            assertEquals("at least one of 'namespace' or 'sqlAction' must be given.", e.getMessage());
         }
     }
 
     public void testAssemblingRulesWithConfiguringBothNamspaceAndSqlmap() {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/abnormal_rule_fixture3.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/abnormal_rule_fixture3.xml"));
         try {
             factory.afterPropertiesSet();
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof IllegalArgumentException);
-            assertEquals(
-                    "'namespace' and 'sqlAction' are alternatives, can't guess which one to use if both of them are provided.",
-                    e.getMessage());
+            assertEquals("'namespace' and 'sqlAction' are alternatives, can't guess which one to use if both of them are provided.", e.getMessage());
         }
     }
 
     public void testAssemblingRulesWithInvalidFormatConfiguration() {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/abnormal_rule_fixture4.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/abnormal_rule_fixture4.xml"));
         try {
             factory.afterPropertiesSet();
             fail();
@@ -100,8 +93,7 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     }
 
     public void testAssemblingRulesWithNonExistenceConfiguration() {
-        factory.setConfigLocation(new ClassPathResource(
-                "com/alibaba/cobar/client/router/config/abnormal_fixture.xml"));
+        factory.setConfigLocation(new ClassPathResource("com/alibaba/cobar/client/router/config/abnormal_fixture.xml"));
         try {
             factory.afterPropertiesSet();
             fail();
@@ -113,19 +105,14 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     /**
      * load two set of rules with same rule entries, same rule entry should be
      * merge to one.
-     * 
-     * @throws Exception
      */
     public void testAssemblingRulesWithMultipleSameConfigurations() throws Exception {
         Map<String, Object> functions = new HashMap<String, Object>();
         functions.put("mock_function", new Object());
         factory.setFunctionsMap(functions);
 
-        factory.setConfigLocations(new Resource[] {
-                new ClassPathResource(
-                        "com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"),
-                new ClassPathResource(
-                        "com/alibaba/cobar/client/router/config/normal_rule_fixture2.xml") });
+        factory.setConfigLocations(new Resource[]{new ClassPathResource("com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"),
+            new ClassPathResource("com/alibaba/cobar/client/router/config/normal_rule_fixture2.xml")});
         factory.afterPropertiesSet();
         CobarClientInternalRouter router = (CobarClientInternalRouter) factory.getObject();
         List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> rules = router.getRuleSequences();
@@ -135,9 +122,8 @@ public class CobarInternalRouterXmlFactoryBeanTest {
         for (Set<IRoutingRule<IBatisRoutingFact, List<String>>> set : rules) {
             assertEquals(1, set.size());
             IRoutingRule<IBatisRoutingFact, List<String>> r = set.iterator().next();
-            if(r instanceof IBatisNamespaceShardingRule || r instanceof IBatisSqlActionShardingRule)
-            {
-                Map<String, Object> funcMap = ((AbstractIBatisOrientedRule)r).getFunctionMap();
+            if (r instanceof IBatisNamespaceShardingRule || r instanceof IBatisSqlActionShardingRule) {
+                Map<String, Object> funcMap = ((AbstractIBatisOrientedRule) r).getFunctionMap();
                 assertTrue(MapUtils.isNotEmpty(funcMap));
                 assertEquals("mock_function", funcMap.keySet().iterator().next());
             }
@@ -145,11 +131,8 @@ public class CobarInternalRouterXmlFactoryBeanTest {
     }
 
     public void testAssemblingRulesWithMultiplePartialSameConfiguration() throws Exception {
-        factory.setConfigLocations(new Resource[] {
-                new ClassPathResource(
-                        "com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"),
-                new ClassPathResource(
-                        "com/alibaba/cobar/client/router/config/normal_rule_fixture3.xml") });
+        factory.setConfigLocations(new Resource[]{new ClassPathResource("com/alibaba/cobar/client/router/config/normal_rule_fixture.xml"),
+            new ClassPathResource("com/alibaba/cobar/client/router/config/normal_rule_fixture3.xml")});
         factory.afterPropertiesSet();
         CobarClientInternalRouter router = (CobarClientInternalRouter) factory.getObject();
         List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> rules = router.getRuleSequences();

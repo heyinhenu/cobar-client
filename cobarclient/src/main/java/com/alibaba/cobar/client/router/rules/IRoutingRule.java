@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules;
+package com.alibaba.cobar.client.router.rules;
 
 import com.alibaba.cobar.client.router.ICobarRouter;
 
@@ -21,15 +21,15 @@ import com.alibaba.cobar.client.router.ICobarRouter;
  * a rule acts in a "when-then" behavior, in our case, when the fact
  * {@link #isDefinedAt(Object)} or matches, then we will return action result.
  * the {@link ICobarRouter} will decide how to use these action result.
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public interface IRoutingRule<F, T> {
+
     /**
      * @param <F>, the type of the routing fact
      * @param routeFact, the fact to check against
-     * @return
      */
     boolean isDefinedAt(F routingFact);
 
@@ -37,8 +37,6 @@ public interface IRoutingRule<F, T> {
      * if a update or delete will involve multiple data sources, we have to
      * return a group of data sources to use.<br>
      * for rules the matches only one data source, return a set with size==1.<br>
-     * 
-     * @return
      */
     T action();
 }

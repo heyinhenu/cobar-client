@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules.ibatis;
+package com.alibaba.cobar.client.router.rules.ibatis;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -22,9 +22,9 @@ import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 
 /**
  * iBatis SQL-Map specific vertical partitioning rule.<br>
- * 
+ *
  * @author fujohnwang
- * @since  1.0 
+ * @since 1.0
  */
 public class IBatisSqlActionRule extends AbstractIBatisOrientedRule {
 
@@ -39,8 +39,7 @@ public class IBatisSqlActionRule extends AbstractIBatisOrientedRule {
 
     @Override
     public String toString() {
-        return "IBatisSqlActionRule [getAction()=" + getAction() + ", getTypePattern()="
-                + getTypePattern() + "]";
+        return "IBatisSqlActionRule [getAction()=" + getAction() + ", getTypePattern()=" + getTypePattern() + "]";
     }
 
 }

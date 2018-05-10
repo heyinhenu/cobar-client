@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config;
+package com.alibaba.cobar.client.router.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,17 +25,17 @@ import com.alibaba.cobar.client.router.config.vo.InternalRule;
 import com.alibaba.cobar.client.router.config.vo.InternalRules;
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
 import com.thoughtworks.xstream.XStream;
+
 /**
- * 
  * {@link DefaultCobarClientInternalRouterXmlFactoryBean} will load rule definitions from external xml configuration files.<br>
  * if you want to directly define rules in spring's IoC Container, see {@link StaticCobarClientInternalRouterFactoryBean}.
+ *
  * @author fujohnwang
- * @see    StaticCobarClientInternalRouterFactoryBean
+ * @see StaticCobarClientInternalRouterFactoryBean
  */
-public class DefaultCobarClientInternalRouterXmlFactoryBean extends
-        AbstractCobarClientInternalRouterFactoryBean {
+public class DefaultCobarClientInternalRouterXmlFactoryBean extends AbstractCobarClientInternalRouterFactoryBean {
 
-    private Resource   configLocation;
+    private Resource configLocation;
     private Resource[] configLocations;
 
     public Resource getConfigLocation() {
@@ -65,16 +65,14 @@ public class DefaultCobarClientInternalRouterXmlFactoryBean extends
         List<InternalRule> rules = new ArrayList<InternalRule>();
 
         if (getConfigLocation() != null) {
-            InternalRules internalRules = (InternalRules) xstream.fromXML(getConfigLocation()
-                    .getInputStream());
+            InternalRules internalRules = (InternalRules) xstream.fromXML(getConfigLocation().getInputStream());
             if (!CollectionUtils.isEmpty(internalRules.getRules())) {
                 rules.addAll(internalRules.getRules());
             }
         }
         if (getConfigLocations() != null && getConfigLocations().length > 0) {
             for (Resource resource : getConfigLocations()) {
-                InternalRules internalRules = (InternalRules) xstream.fromXML(resource
-                        .getInputStream());
+                InternalRules internalRules = (InternalRules) xstream.fromXML(resource.getInputStream());
                 if (!CollectionUtils.isEmpty(internalRules.getRules())) {
                     rules.addAll(internalRules.getRules());
                 }

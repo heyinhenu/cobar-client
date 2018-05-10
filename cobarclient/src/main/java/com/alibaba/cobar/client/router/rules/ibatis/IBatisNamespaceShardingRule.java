@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules.ibatis;
+package com.alibaba.cobar.client.router.rules.ibatis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +30,7 @@ import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 
 public class IBatisNamespaceShardingRule extends AbstractIBatisOrientedRule {
 
-    private transient final Logger logger = LoggerFactory
-                                                  .getLogger(IBatisNamespaceShardingRule.class);
+    private transient final Logger logger = LoggerFactory.getLogger(IBatisNamespaceShardingRule.class);
 
     public IBatisNamespaceShardingRule(String pattern, String action, String attributePattern) {
         super(pattern, action, attributePattern);
@@ -51,10 +50,8 @@ public class IBatisNamespaceShardingRule extends AbstractIBatisOrientedRule {
                     return true;
                 }
             } catch (Throwable t) {
-                logger
-                        .info(
-                                "failed to evaluate attribute expression:'{}' with context object:'{}'\n{}",
-                                new Object[] { getAttributePattern(), routingFact.getArgument(), t });
+                logger.info("failed to evaluate attribute expression:'{}' with context object:'{}'\n{}", new Object[]{getAttributePattern(),
+                    routingFact.getArgument(), t});
             }
         }
         return false;
@@ -62,8 +59,8 @@ public class IBatisNamespaceShardingRule extends AbstractIBatisOrientedRule {
 
     @Override
     public String toString() {
-        return "IBatisNamespaceShardingRule [getAttributePattern()=" + getAttributePattern()
-                + ", getAction()=" + getAction() + ", getTypePattern()=" + getTypePattern() + "]";
+        return "IBatisNamespaceShardingRule [getAttributePattern()=" + getAttributePattern() + ", getAction()=" + getAction() + ", getTypePattern()="
+            + getTypePattern() + "]";
     }
 
 }

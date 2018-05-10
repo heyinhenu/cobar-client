@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config;
+package com.alibaba.cobar.client.router.config;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,22 +33,22 @@ import com.alibaba.cobar.client.support.LRUMap;
 
 /**
  * Top super class used to configure DefaultCobarClientInternalRouter instances.<br>
- * 
+ *
  * @author fujohnwang
  * @see DefaultCobarClientInternalRouter
  * @see DefaultCobarClientInternalRouterXmlFactoryBean
  * @see StaticCobarClientInternalRouterFactoryBean
  */
-public abstract class AbstractCobarClientInternalRouterFactoryBean implements FactoryBean,
-        InitializingBean {
-    private ICobarRouter<IBatisRoutingFact>          router;
+public abstract class AbstractCobarClientInternalRouterFactoryBean implements FactoryBean, InitializingBean {
 
-    private Map<String, Object>                      functionsMap = new HashMap<String, Object>();
+    private ICobarRouter<IBatisRoutingFact> router;
 
-    private InternalRuleLoader4DefaultInternalRouter ruleLoader   = new InternalRuleLoader4DefaultInternalRouter();
+    private Map<String, Object> functionsMap = new HashMap<String, Object>();
 
-    private boolean                                  enableCache;
-    private int                                      cacheSize    = -1;
+    private InternalRuleLoader4DefaultInternalRouter ruleLoader = new InternalRuleLoader4DefaultInternalRouter();
+
+    private boolean enableCache;
+    private int cacheSize = -1;
 
     public Object getObject() throws Exception {
         return router;
@@ -74,7 +74,7 @@ public abstract class AbstractCobarClientInternalRouterFactoryBean implements Fa
 
         if (isEnableCache()) {
             ProxyFactory proxyFactory = new ProxyFactory(routerToUse);
-            proxyFactory.setInterfaces(new Class[] { ICobarRouter.class });
+            proxyFactory.setInterfaces(new Class[]{ICobarRouter.class});
             RoutingResultCacheAspect advice = new RoutingResultCacheAspect();
             if (cacheSize > 0) {
                 advice.setInternalCache(new LRUMap(cacheSize));

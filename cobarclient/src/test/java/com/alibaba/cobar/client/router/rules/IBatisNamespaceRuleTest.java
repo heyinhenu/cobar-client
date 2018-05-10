@@ -15,16 +15,15 @@ import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 import com.alibaba.cobar.client.support.utils.CollectionUtils;
 
 @Test
-public class IBatisNamespaceRuleTest{
+public class IBatisNamespaceRuleTest {
+
     public void testNamespaceRuleNormally() {
-        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet",
-                "p1, p2");
+        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet", "p1, p2");
         List<String> shardIds = rule.action();
         assertNotNull(shardIds);
         assertEquals(2, shardIds.size());
 
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.update", null);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.update", null);
         assertTrue(rule.isDefinedAt(fact));
         fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.delete", null);
         assertTrue(rule.isDefinedAt(fact));
@@ -33,8 +32,7 @@ public class IBatisNamespaceRuleTest{
     }
 
     public void testNamespaceRuleNormallyWithCustomActionPatternSeparator() {
-        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet",
-                "p1, p2");
+        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet", "p1, p2");
         rule.setActionPatternSeparator(";");
         List<String> shards = rule.action();
         assertTrue(CollectionUtils.isNotEmpty(shards));
@@ -47,8 +45,7 @@ public class IBatisNamespaceRuleTest{
         assertTrue(CollectionUtils.isNotEmpty(shards));
         assertEquals(2, shards.size());
 
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.update", null);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.update", null);
         assertTrue(rule.isDefinedAt(fact));
         fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.delete", null);
         assertTrue(rule.isDefinedAt(fact));
@@ -85,8 +82,7 @@ public class IBatisNamespaceRuleTest{
             // pass
         }
 
-        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet",
-                "p1, p2");
+        IBatisNamespaceRule rule = new IBatisNamespaceRule("com.alibaba.cobar.client.entity.Tweet", "p1, p2");
         try {
             rule.setActionPatternSeparator(null);
         } catch (IllegalArgumentException e) {

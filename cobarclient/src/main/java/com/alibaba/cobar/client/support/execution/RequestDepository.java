@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.execution;
+package com.alibaba.cobar.client.support.execution;
 
 import java.sql.Connection;
 
 /**
  * temporary status depository for request processing.<br>
- * 
+ *
  * @author fujohnwang
  * @since 1.0
  */
 public class RequestDepository {
+
     private ConcurrentRequest originalRequest;
-    private Connection        connectionToUse;
-    private boolean           transactionAware;
+    private Connection connectionToUse;
+    private boolean transactionAware;
 
     public ConcurrentRequest getOriginalRequest() {
         return originalRequest;

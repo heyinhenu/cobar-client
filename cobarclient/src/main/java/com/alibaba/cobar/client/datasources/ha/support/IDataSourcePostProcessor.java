@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.datasources.ha.support;
+package com.alibaba.cobar.client.datasources.ha.support;
 
 import javax.sql.DataSource;
 
@@ -22,10 +22,11 @@ import com.alibaba.cobar.client.datasources.DefaultCobarDataSourceService;
 /**
  * A Callback Interface that can be used to hook in custom cross-cutting concerns for your DataSource.<br>
  * currently, there is no need to use it yet.
- * 
+ *
  * @author fujohnwang
- * @see    DefaultCobarDataSourceService
+ * @see DefaultCobarDataSourceService
  */
 public interface IDataSourcePostProcessor {
-	DataSource postProcess(DataSource dataSource);
+
+    DataSource postProcess(DataSource dataSource);
 }

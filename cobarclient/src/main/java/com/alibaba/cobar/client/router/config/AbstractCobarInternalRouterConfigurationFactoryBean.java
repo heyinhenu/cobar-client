@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.config;
+package com.alibaba.cobar.client.router.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,17 +32,17 @@ import com.alibaba.cobar.client.router.CobarClientInternalRouter;
 import com.alibaba.cobar.client.router.rules.IRoutingRule;
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 
-public abstract class AbstractCobarInternalRouterConfigurationFactoryBean implements FactoryBean,
-        InitializingBean {
+public abstract class AbstractCobarInternalRouterConfigurationFactoryBean implements FactoryBean, InitializingBean {
+
     private CobarClientInternalRouter router;
 
-    private boolean                   enableCache;
-    private int                       cacheSize;
+    private boolean enableCache;
+    private int cacheSize;
 
-    private Resource                  configLocation;
-    private Resource[]                configLocations;
+    private Resource configLocation;
+    private Resource[] configLocations;
 
-    private Map<String, Object>       functionsMap = new HashMap<String, Object>();
+    private Map<String, Object> functionsMap = new HashMap<String, Object>();
 
     public Object getObject() throws Exception {
         return this.router;
@@ -71,19 +71,18 @@ public abstract class AbstractCobarInternalRouterConfigurationFactoryBean implem
         final Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceRules = new HashSet<IRoutingRule<IBatisRoutingFact, List<String>>>();
 
         if (getConfigLocation() != null) {
-            assembleRulesForRouter(this.router, getConfigLocation(), sqlActionShardingRules,
-                    sqlActionRules, namespaceShardingRules, namespaceRules);
+            assembleRulesForRouter(this.router, getConfigLocation(), sqlActionShardingRules, sqlActionRules, namespaceShardingRules, namespaceRules);
         }
 
         if (!ObjectUtils.isEmpty(getConfigLocations())) {
             for (Resource res : getConfigLocations()) {
-                assembleRulesForRouter(this.router, res, sqlActionShardingRules, sqlActionRules,
-                        namespaceShardingRules, namespaceRules);
+                assembleRulesForRouter(this.router, res, sqlActionShardingRules, sqlActionRules, namespaceShardingRules, namespaceRules);
             }
         }
 
         List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> ruleSequences = new ArrayList<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>() {
             private static final long serialVersionUID = 1493353938640646578L;
+
             {
                 add(sqlActionShardingRules);
                 add(sqlActionRules);
@@ -98,21 +97,11 @@ public abstract class AbstractCobarInternalRouterConfigurationFactoryBean implem
     /**
      * Subclass just needs to read in rule configurations and assemble the
      * router with the rules read from configurations.
-     * 
-     * @param router
-     * @param namespaceRules
-     * @param namespaceShardingRules
-     * @param sqlActionRules
-     * @param sqlActionShardingRules
      */
-    protected abstract void assembleRulesForRouter(
-                                                   CobarClientInternalRouter router,
-                                                   Resource configLocation,
-                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionShardingRules,
-                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionRules,
-                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceShardingRules,
-                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceRules)
-            throws IOException;
+    protected abstract void assembleRulesForRouter(CobarClientInternalRouter router, Resource configLocation,
+        Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionShardingRules, Set<IRoutingRule<IBatisRoutingFact, List<String>>> sqlActionRules,
+        Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceShardingRules, Set<IRoutingRule<IBatisRoutingFact, List<String>>> namespaceRules)
+        throws IOException;
 
     public void setConfigLocation(Resource configLocation) {
         this.configLocation = configLocation;

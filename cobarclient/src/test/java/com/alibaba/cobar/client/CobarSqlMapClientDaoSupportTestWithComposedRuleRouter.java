@@ -12,21 +12,18 @@ import org.testng.annotations.Test;
 import com.alibaba.cobar.client.entities.Offer;
 
 @Test(sequential = true)
-public class CobarSqlMapClientDaoSupportTestWithComposedRuleRouter extends
-        AbstractTestNGCobarClientTest {
+public class CobarSqlMapClientDaoSupportTestWithComposedRuleRouter extends AbstractTestNGCobarClientTest {
 
-    private CobarSqlMapClientDaoSupport dao        = new CobarSqlMapClientDaoSupport();
-    private Long[]                      memberIds  = new Long[] { 1L, 129L, 257L, 2L, 130L, 258L,
-            386L                                  };
+    private CobarSqlMapClientDaoSupport dao = new CobarSqlMapClientDaoSupport();
+    private Long[] memberIds = new Long[]{1L, 129L, 257L, 2L, 130L, 258L, 386L};
 
-    public static final String          CREATE_SQL = "com.alibaba.cobar.client.entities.Offer.create";
-    public static final String          UPDATE_SQL = "com.alibaba.cobar.client.entities.Offer.update";
-    public static final String          DELETE_SQL = "com.alibaba.cobar.client.entities.Offer.deleteByMemberId";
+    public static final String CREATE_SQL = "com.alibaba.cobar.client.entities.Offer.create";
+    public static final String UPDATE_SQL = "com.alibaba.cobar.client.entities.Offer.update";
+    public static final String DELETE_SQL = "com.alibaba.cobar.client.entities.Offer.deleteByMemberId";
 
     public CobarSqlMapClientDaoSupportTestWithComposedRuleRouter() {
-        super(new String[] { "META-INF/spring/cobar-client-appctx.xml",
-                "META-INF/spring/datasources-appctx.xml",
-                "META-INF/spring/namespace-sqlaction-composed-router-appctx.xml" });
+        super(new String[]{"META-INF/spring/cobar-client-appctx.xml", "META-INF/spring/datasources-appctx.xml",
+            "META-INF/spring/namespace-sqlaction-composed-router-appctx.xml"});
     }
 
     @BeforeTest
@@ -71,7 +68,7 @@ public class CobarSqlMapClientDaoSupportTestWithComposedRuleRouter extends
         int insertCount = dao.batchInsert(CREATE_SQL, offers);
         assertEquals(7, insertCount);
         verifyExistenceOnPartitions();
-        
+
         int deleteCount = dao.batchDelete(DELETE_SQL, offers);
         assertEquals(7, deleteCount);
         verifyNonExistenceOnPartitions();

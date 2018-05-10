@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.utils;
+package com.alibaba.cobar.client.support.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class CollectionUtils {
+
     @SuppressWarnings("rawtypes")
     public static Collection select(Collection inputCollection, Predicate predicate) {
         List answer = new ArrayList(inputCollection.size());
@@ -28,11 +29,10 @@ public class CollectionUtils {
         return answer;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void select(Collection inputCollection, Predicate predicate,
-                              Collection outputCollection) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static void select(Collection inputCollection, Predicate predicate, Collection outputCollection) {
         if (inputCollection != null && predicate != null) {
-            for (Iterator iter = inputCollection.iterator(); iter.hasNext();) {
+            for (Iterator iter = inputCollection.iterator(); iter.hasNext(); ) {
                 Object item = iter.next();
                 if (predicate.evaluate(item)) {
                     outputCollection.add(item);

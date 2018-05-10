@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.exception;
+package com.alibaba.cobar.client.exception;
 
 import org.springframework.dao.UncategorizedDataAccessException;
 
 public class UncategorizedCobarClientException extends UncategorizedDataAccessException {
+
     private static final long serialVersionUID = -5001927974502714777L;
 
     public UncategorizedCobarClientException(String msg, Throwable cause) {

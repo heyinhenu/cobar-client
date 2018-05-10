@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.vo;
+package com.alibaba.cobar.client.support.vo;
 
 import java.util.Collection;
 
 public class BatchInsertTask {
+
     private Collection<?> entities;
 
     public BatchInsertTask() {

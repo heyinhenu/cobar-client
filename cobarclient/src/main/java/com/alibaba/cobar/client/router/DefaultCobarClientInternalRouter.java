@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router;
+package com.alibaba.cobar.client.router;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,15 +40,14 @@ import com.alibaba.cobar.client.support.utils.CollectionUtils;
  * usually, the users don't need to care about these internal details, to use
  * {@link DefaultCobarClientInternalRouter}, just turn to
  * {@link DefaultCobarClientInternalRouterXmlFactoryBean} for instantiation.<br>
- * 
+ *
  * @author fujohnwang
- * @since 1.0
  * @see DefaultCobarClientInternalRouterXmlFactoryBean
+ * @since 1.0
  */
 public class DefaultCobarClientInternalRouter implements ICobarRouter<IBatisRoutingFact> {
 
-    private transient final Logger                                                logger                 = LoggerFactory
-                                                                                                                 .getLogger(DefaultCobarClientInternalRouter.class);
+    private transient final Logger logger = LoggerFactory.getLogger(DefaultCobarClientInternalRouter.class);
 
     private Map<String, List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>> rulesGroupByNamespaces = new HashMap<String, List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>>();
 
@@ -57,8 +56,7 @@ public class DefaultCobarClientInternalRouter implements ICobarRouter<IBatisRout
         String action = routingFact.getAction();
         Validate.notEmpty(action);
         String namespace = StringUtils.substringBeforeLast(action, ".");
-        List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> rules = getRulesGroupByNamespaces()
-                .get(namespace);
+        List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>> rules = getRulesGroupByNamespaces().get(namespace);
 
         RoutingResult result = new RoutingResult();
         result.setResourceIdentities(new ArrayList<String>());
@@ -83,9 +81,8 @@ public class DefaultCobarClientInternalRouter implements ICobarRouter<IBatisRout
         return result;
     }
 
-    private IRoutingRule<IBatisRoutingFact, List<String>> searchMatchedRuleAgainst(
-                                                                                   Set<IRoutingRule<IBatisRoutingFact, List<String>>> rules,
-                                                                                   IBatisRoutingFact routingFact) {
+    private IRoutingRule<IBatisRoutingFact, List<String>> searchMatchedRuleAgainst(Set<IRoutingRule<IBatisRoutingFact, List<String>>> rules,
+        IBatisRoutingFact routingFact) {
         if (CollectionUtils.isEmpty(rules)) {
             return null;
         }
@@ -97,8 +94,7 @@ public class DefaultCobarClientInternalRouter implements ICobarRouter<IBatisRout
         return null;
     }
 
-    public void setRulesGroupByNamespaces(
-                                          Map<String, List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>> rulesGroupByNamespaces) {
+    public void setRulesGroupByNamespaces(Map<String, List<Set<IRoutingRule<IBatisRoutingFact, List<String>>>>> rulesGroupByNamespaces) {
         this.rulesGroupByNamespaces = rulesGroupByNamespaces;
     }
 

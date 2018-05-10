@@ -19,20 +19,16 @@ import com.alibaba.cobar.client.support.vo.BatchInsertTask;
 public class CobarSqlMapClientTemplateWithCustomMergerTest extends AbstractTestNGCobarClientTest {
 
     public CobarSqlMapClientTemplateWithCustomMergerTest() {
-        super(new String[] { "META-INF/spring/datasources-appctx.xml",
-                "META-INF/spring/cobar-client-appctx.xml",
-                "META-INF/spring/cobar-client-custom-merger-appctx.xml" });
+        super(new String[]{"META-INF/spring/datasources-appctx.xml", "META-INF/spring/cobar-client-appctx.xml",
+            "META-INF/spring/cobar-client-custom-merger-appctx.xml"});
     }
 
     @Test
     public void testQueryForListWithCustomMerger() {
         batchInsertOffersAsFixture();
 
-        SqlMapClientTemplate st = (SqlMapClientTemplate) getApplicationContext().getBean(
-                "sqlMapClientTemplateWithMerger");
-        @SuppressWarnings("unchecked")
-        List lst = st
-                .queryForList("com.alibaba.cobar.client.entities.Offer.findAllWithOrderByOnSubject");
+        SqlMapClientTemplate st = (SqlMapClientTemplate) getApplicationContext().getBean("sqlMapClientTemplateWithMerger");
+        @SuppressWarnings("unchecked") List lst = st.queryForList("com.alibaba.cobar.client.entities.Offer.findAllWithOrderByOnSubject");
         assertTrue(CollectionUtils.isNotEmpty(lst));
         assertEquals(5, lst.size());
 
@@ -76,16 +72,14 @@ public class CobarSqlMapClientTemplateWithCustomMergerTest extends AbstractTestN
     public void testQueryForListWithoutCustomMerger() {
         batchInsertOffersAsFixture();
 
-        List lst = getSqlMapClientTemplate().queryForList(
-                "com.alibaba.cobar.client.entities.Offer.findAllWithOrderByOnSubject");
+        List lst = getSqlMapClientTemplate().queryForList("com.alibaba.cobar.client.entities.Offer.findAllWithOrderByOnSubject");
 
         assertTrue(CollectionUtils.isNotEmpty(lst));
         // contains all of the entities, but the order is not guaranteed.
         assertEquals(5, lst.size());
 
         // sort in application code
-        Comparator<Offer> comparator = (Comparator<Offer>) getApplicationContext().getBean(
-                "comparator");
+        Comparator<Offer> comparator = (Comparator<Offer>) getApplicationContext().getBean("comparator");
         Collections.sort(lst, comparator);
         verifyOffersOrderBySubject(lst);
     }
@@ -126,7 +120,6 @@ public class CobarSqlMapClientTemplateWithCustomMergerTest extends AbstractTestN
 
         task.setEntities(offers);
 
-        getSqlMapClientTemplate().insert("com.alibaba.cobar.client.entities.Offer.batchInsert",
-                task);
+        getSqlMapClientTemplate().insert("com.alibaba.cobar.client.entities.Offer.batchInsert", task);
     }
 }

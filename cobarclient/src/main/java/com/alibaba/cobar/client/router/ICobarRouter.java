@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router;
+package com.alibaba.cobar.client.router;
 
 import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 import com.alibaba.cobar.client.router.support.RoutingResult;
 
 /**
- * the routing fact can be any type, for our current ibatis-based solution, 
+ * the routing fact can be any type, for our current ibatis-based solution,
  * it can be a wrapper object of sql action and its argument.<br>
  * for other solutions, it can be other type as per different situations.<br>
- * 
+ *
  * @author fujohnwang
- * @since  1.0
- * @see    IBatisRoutingFact
+ * @see IBatisRoutingFact
+ * @since 1.0
  */
 public interface ICobarRouter<T> {
-	RoutingResult doRoute(T routingFact) throws RoutingException;
+
+    RoutingResult doRoute(T routingFact) throws RoutingException;
 }

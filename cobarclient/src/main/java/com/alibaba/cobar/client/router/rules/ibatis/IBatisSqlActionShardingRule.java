@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.router.rules.ibatis;
+package com.alibaba.cobar.client.router.rules.ibatis;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,8 +30,7 @@ import com.alibaba.cobar.client.router.support.IBatisRoutingFact;
 
 public class IBatisSqlActionShardingRule extends AbstractIBatisOrientedRule {
 
-    private transient final Logger logger = LoggerFactory
-                                                  .getLogger(IBatisSqlActionShardingRule.class);
+    private transient final Logger logger = LoggerFactory.getLogger(IBatisSqlActionShardingRule.class);
 
     public IBatisSqlActionShardingRule(String pattern, String action, String attributePattern) {
         super(pattern, action, attributePattern);
@@ -50,10 +49,8 @@ public class IBatisSqlActionShardingRule extends AbstractIBatisOrientedRule {
                     return true;
                 }
             } catch (Throwable t) {
-                logger
-                        .info(
-                                "failed to evaluate attribute expression:'{}' with context object:'{}'\n{}",
-                                new Object[] { getAttributePattern(), routingFact.getArgument(), t });
+                logger.info("failed to evaluate attribute expression:'{}' with context object:'{}'\n{}", new Object[]{getAttributePattern(),
+                    routingFact.getArgument(), t});
             }
         }
 
@@ -62,8 +59,8 @@ public class IBatisSqlActionShardingRule extends AbstractIBatisOrientedRule {
 
     @Override
     public String toString() {
-        return "IBatisSqlActionShardingRule [getAttributePattern()=" + getAttributePattern()
-                + ", getAction()=" + getAction() + ", getTypePattern()=" + getTypePattern() + "]";
+        return "IBatisSqlActionShardingRule [getAttributePattern()=" + getAttributePattern() + ", getAction()=" + getAction() + ", getTypePattern()="
+            + getTypePattern() + "]";
     }
 
 }

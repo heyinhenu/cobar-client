@@ -22,24 +22,25 @@ import com.alibaba.cobar.client.support.utils.CollectionUtils;
 
 /**
  * TODO Comment of IBatisSqlActionShardingRuleTest
- * 
+ *
  * @author fujohnwang
  * @see {@link IBatisNamespaceShardingRuleTest} for more test scenarios.
  */
 @Test
-public class IBatisSqlActionShardingRuleTest{
+public class IBatisSqlActionShardingRuleTest {
+
     // almost copied from IBatisNamespaceShardingRuleTest, although a same top class is better.
-    public static final String          DEFAULT_TYPE_PATTEN      = "com.alibaba.cobar.client.entity.Tweet.create";
-    public static final String          DEFAULT_SHARDING_PATTERN = "id>=10000 and id < 20000";
-    public static final String[]        DEFAULT_SHARDS           = { "shard1", "shard2" };
+    public static final String DEFAULT_TYPE_PATTEN = "com.alibaba.cobar.client.entity.Tweet.create";
+    public static final String DEFAULT_SHARDING_PATTERN = "id>=10000 and id < 20000";
+    public static final String[] DEFAULT_SHARDS = {"shard1", "shard2"};
 
     private IBatisSqlActionShardingRule rule;
 
     @BeforeMethod
     protected void setUp() throws Exception {
-        rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "shard1,shard2",
-                DEFAULT_SHARDING_PATTERN);
+        rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "shard1,shard2", DEFAULT_SHARDING_PATTERN);
     }
+
     @AfterMethod
     protected void tearDown() throws Exception {
         rule = null;
@@ -61,16 +62,14 @@ public class IBatisSqlActionShardingRuleTest{
         }
 
         try {
-            rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "",
-                    DEFAULT_SHARDING_PATTERN);
+            rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "", DEFAULT_SHARDING_PATTERN);
             fail();
         } catch (IllegalArgumentException e) {
             // pass
         }
 
         try {
-            rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, null,
-                    DEFAULT_SHARDING_PATTERN);
+            rule = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, null, DEFAULT_SHARDING_PATTERN);
             fail();
         } catch (IllegalArgumentException e) {
             // pass
@@ -96,8 +95,7 @@ public class IBatisSqlActionShardingRuleTest{
         t.setId(15000L);
         t.setTweet("anything");
 
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", t);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", t);
         assertTrue(rule.isDefinedAt(fact));
         List<String> shards = rule.action();
         assertTrue(CollectionUtils.isNotEmpty(shards));
@@ -137,35 +135,29 @@ public class IBatisSqlActionShardingRuleTest{
     }
 
     public void testSqlActionShardingRuleWithCustomFunctions() {
-        IBatisSqlActionShardingRule r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN,
-                "shard1,shard2", "mod.apply(id)==3");
+        IBatisSqlActionShardingRule r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "shard1,shard2", "mod.apply(id)==3");
         Map<String, Object> functions = new HashMap<String, Object>();
         functions.put("mod", new ModFunction(18L));
         r.setFunctionMap(functions);
-        
+
         Tweet t = new Tweet();
         t.setId(21L);
         t.setTweet("anything");
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", t);
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", t);
         assertTrue(r.isDefinedAt(fact));
     }
-    
-    public void testSqlActionShardingRuleWithSimpleContextObjectType(){
-        IBatisSqlActionShardingRule r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN,
-                "shard1", "$ROOT.startsWith(\"J\")");
-        IBatisRoutingFact fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", "Jack");
+
+    public void testSqlActionShardingRuleWithSimpleContextObjectType() {
+        IBatisSqlActionShardingRule r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "shard1", "$ROOT.startsWith(\"J\")");
+        IBatisRoutingFact fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", "Jack");
         assertTrue(r.isDefinedAt(fact));
-        
-        r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN,
-                "shard1", "startsWith(\"J\")");
+
+        r = new IBatisSqlActionShardingRule(DEFAULT_TYPE_PATTEN, "shard1", "startsWith(\"J\")");
         assertTrue(r.isDefinedAt(fact));
-        
-        fact = new IBatisRoutingFact(
-                "com.alibaba.cobar.client.entity.Tweet.create", "Amanda");
+
+        fact = new IBatisRoutingFact("com.alibaba.cobar.client.entity.Tweet.create", "Amanda");
         assertFalse(r.isDefinedAt(fact));
-        
-        
+
+
     }
 }

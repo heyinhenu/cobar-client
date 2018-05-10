@@ -13,23 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.support.execution;
+package com.alibaba.cobar.client.support.execution;
 
 import java.util.concurrent.ExecutorService;
 
 import javax.sql.DataSource;
 
 import org.springframework.orm.ibatis.SqlMapClientCallback;
+
 /**
  * {@link #action} will be executed on {@link #dataSource} with {@link #executor} asynchronously.<br>
- * 
+ *
  * @author fujohnwang
- * @since  1.0 
+ * @since 1.0
  */
 public class ConcurrentRequest {
+
     private SqlMapClientCallback action;
-    private DataSource           dataSource;
-    private ExecutorService      executor;
+    private DataSource dataSource;
+    private ExecutorService executor;
 
     public SqlMapClientCallback getAction() {
         return action;

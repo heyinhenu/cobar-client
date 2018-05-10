@@ -12,8 +12,8 @@ import org.testng.annotations.Test;
 
 @Test
 public class ConcurrentSortMergerTest {
-    
-    public void testMerge() throws Exception{
+
+    public void testMerge() throws Exception {
         ConcurrentSortMerger<Integer> merger = new ConcurrentSortMerger<Integer>();
         merger.setComparator(new Comparator<Integer>() {
             public int compare(Integer o1, Integer o2) {
@@ -26,7 +26,7 @@ public class ConcurrentSortMergerTest {
         entities.add(Arrays.asList(3, 5, 8, 10));
         List<Integer> result = merger.merge(entities);
         assertEquals(7, result.size());
-        assertTrue(Arrays.equals(new Integer[]{1,2,3,4,5,8,10}, result.toArray(new Integer[result.size()])));
+        assertTrue(Arrays.equals(new Integer[]{1, 2, 3, 4, 5, 8, 10}, result.toArray(new Integer[result.size()])));
         merger.destroy();
     }
 }

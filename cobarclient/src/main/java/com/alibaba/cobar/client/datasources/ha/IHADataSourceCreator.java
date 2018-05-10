@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.alibaba.cobar.client.datasources.ha;
+package com.alibaba.cobar.client.datasources.ha;
 
 import javax.sql.DataSource;
 
 import com.alibaba.cobar.client.datasources.CobarDataSourceDescriptor;
 
 public interface IHADataSourceCreator {
-	DataSource createHADataSource(CobarDataSourceDescriptor descriptor) throws Exception;
+
+    DataSource createHADataSource(CobarDataSourceDescriptor descriptor) throws Exception;
 }
